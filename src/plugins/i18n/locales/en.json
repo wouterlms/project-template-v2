@@ -1,0 +1,35 @@
+{
+  "auth.forgot_password_form.dont_remember_your_password_enter": "Don't remember your password? Enter your email address below.",
+  "auth.forgot_password_form.forgot_password": "Forgot password",
+  "auth.forgot_password_form.return_to_login": "Return to login",
+  "auth.forgot_password_form.send": "Send",
+  "auth.forgot_password_form.thank_you_within_a_few": "Thank you, within a few minutes you will receive an e-mail containing a personal link. The link will allow you to enter a new password.",
+  "auth.login_form.forgot_password": "Forgot password?",
+  "auth.login_form.invalid_email_or_password": "Invalid email or password",
+  "auth.login_form.sign_in_to_continue": "Sign in to continue",
+  "auth.login_form.welcome_back": "Welcome back, {name}",
+  "auth.reset_password_form.enter_your_new_password": "Enter your new password",
+  "auth.reset_password_form.this_is_not_a_valid": "This is not a valid link to reset your password. Please request a new one.",
+  "auth.reset_password_form.your_password_has_been_reset_you_can": "Your password has been reset. You can now sign in with your new password.",
+
+  "common.email": "Email",
+  "common.password": "Password",
+  "common.reset_password": "Reset password",
+  "common.sign_in": "Sign in",
+
+  "layout.loading_form": "Loading form",
+
+  "static.page_title.forgot_password": "Forgot password",
+  "static.page_title.login": "Login",
+  "static.page_title.reset_password": "Reset password",
+
+  "suspense.bad_request": "Bad Request",
+  "suspense.forbidden": "Forbidden",
+  "suspense.loading": "Loading",
+  "suspense.not_found": "Not Found",
+  "suspense.server_error": "Server Error",
+  "suspense.something_went_wrong": "Something went wrong",
+  "suspense.unauthorized": "Unauthorized",
+
+  "validation.required": "Required"
+}

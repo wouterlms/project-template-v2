@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Clash Display';
+  src: url('../fonts/ClashDisplay-Variable.ttf') format('truetype');
+       font-weight: 200 700;
+       font-display: swap;
+       font-style: normal;
+}
+
+@layer base {
+  @import 'reset';
+  
+  * {  
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    @apply box-border m-0 p-0;
+  }
+
+  body {
+    font-family: 'Dm Sans', sans-serif;
+  }
+
+  #app {
+    @apply flex flex-col w-full h-full text-secondary bg-primary flex-1 min-h-screen;
+  }
+
+  img,
+  video {
+    @apply w-full h-full object-cover;
+  }
+
+  button[disabled] {
+    cursor: not-allowed;
+  }
+}
