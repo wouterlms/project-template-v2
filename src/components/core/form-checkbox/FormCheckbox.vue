@@ -42,7 +42,7 @@ const {
 } = useComponentAttrs()
 
 const computedAccentColor = computed<string>(
-  () => props.accentColor ?? colors.value.accent.primary[500],
+  () => props.accentColor ?? colors.value.accent.primary,
 )
 
 const computedBackgroundColor = computed<string>(() => {

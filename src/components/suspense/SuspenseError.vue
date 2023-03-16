@@ -15,19 +15,18 @@ const httpErrorMap = new Map<string, string>(Object.entries({
   404: t('suspense.not_found'),
   500: t('suspense.server_error'),
 }))
+
+console.error(message)
 </script>
 
 <template>
-  <div class="flex items-center p-4">
+  <div class="flex items-center p-4 text-sm">
     <div class="border-primary text-tertiary/75 border-r border-solid px-4 tracking-wider">
       {{ status }}
     </div>
 
     <div class="text-tertiary/75 px-4 uppercase tracking-wider">
-      {{ message
-        ?? httpErrorMap.get(`${status}`)
-        ?? t('suspense.something_went_wrong')
-      }}
+      {{ httpErrorMap.get(`${status}`) ?? t('suspense.something_went_wrong') }}
     </div>
   </div>
 </template>

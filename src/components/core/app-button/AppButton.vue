@@ -75,7 +75,7 @@ const { button, state } = useAppButton()
 const { isDarkColor } = useColor()
 
 const computedAccentColor = computed<string>(
-  () => props.accentColor ?? colors.value.accent.primary[500],
+  () => props.accentColor ?? colors.value.accent.primary,
 )
 
 const textColor = computed<string>(

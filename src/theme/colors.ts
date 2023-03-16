@@ -21,17 +21,7 @@ export type Colors = {
 
 const colors = {
   accent: {
-    primary: {
-      100: '#6193ff',
-      200: '#6193ff',
-      300: '#6193ff',
-      400: '#6193ff',
-      500: '#6193ff',
-      600: '#6193ff',
-      700: '#6193ff',
-      800: '#6193ff',
-      900: '#6193ff',
-    },
+    primary: '#6193ff',
     success: {
       100: '#d9f0e6',
       200: '#b4e1cd',

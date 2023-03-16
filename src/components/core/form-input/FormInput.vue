@@ -114,7 +114,7 @@ const computedBorderColor = computed<string>(() => {
     return colors.value.accent.danger[500]
 
   if (isFocused)
-    return colors.value.accent.primary[500]
+    return colors.value.accent.primary
 
   return borderColor ?? colors.value.border.input
 })
