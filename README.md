@@ -20,7 +20,7 @@ To set up the project, follow these steps:
 2. Copy the `.env.example` file to a new file called `.env`.
 3. Open the `.env` file and fill in the required environment variables with the appropriate values.
 4. Change the project title in `public/index.html` and `src/App.vue` to the desired name.
-5. Change the theme by editing the `theme` object in `src/theme/colors.ts`.
+5. Change the theme by editing the `colors` object in `src/theme/colors.ts`.
 6. Replace the favicon package in `public/` with your own.
 
 Run `pnpm i` and `pnpm dev`
