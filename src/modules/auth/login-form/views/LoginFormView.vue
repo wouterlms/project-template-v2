@@ -4,7 +4,6 @@ import { useForm } from '@appwise/forms'
 import { useLoginFormService, useLoginFormUtils } from '../composables'
 
 import { useForgotPasswordStore, useLoginStore } from '@/stores'
-import { colors } from '@/theme'
 import { loginForm } from '@/models'
 
 import { Route } from '@/enums'
@@ -65,7 +64,6 @@ const { title } = useLoginFormUtils()
 
       <FormButton
         :form="form"
-        :accent-color="colors.accent.primary[500]"
         padding="1.2em"
         class="mt-6 w-full"
       >

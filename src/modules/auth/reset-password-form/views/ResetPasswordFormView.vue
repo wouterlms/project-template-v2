@@ -8,7 +8,6 @@ import { useLoginStore } from '@/stores'
 import { useAuth, useToasts } from '@/composables'
 
 import { resetPasswordForm } from '@/models'
-import { colors } from '@/theme'
 
 const { t } = useI18n()
 const { showToastMessage } = useToasts()
@@ -76,7 +75,6 @@ const description = computed(() => {
 
       <FormButton
         :form="form"
-        :accent-color="colors.accent.primary[500]"
         padding="1.2em"
         class="mt-6 w-full"
       >

@@ -23,5 +23,8 @@
     "parser": "@typescript-eslint/parser",
     "project": "./tsconfig.json",
     "extraFileExtensions": [".vue"]
+  },
+  "rules": {
+    "tailwindcss/no-custom-classname": "off"
   }
 }

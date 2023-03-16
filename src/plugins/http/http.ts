@@ -11,17 +11,17 @@ class InvalidSchemaError extends Error {
 export const get = async<T extends z.ZodObject<any> | z.ZodArray<any>>(
   url: string,
   {
-    schema,
+    responseSchema,
     config,
   }: {
-    schema: T
+    responseSchema: T
     config?: Partial<AxiosRequestConfig<any>>
   },
 ): Promise<z.infer<T>> => {
   const { data } = await axios.get<T>(url, config)
 
   try {
-    return schema.parse(data)
+    return responseSchema.parse(data)
   }
   catch (e) {
     if (e instanceof z.ZodError)
@@ -31,22 +31,29 @@ export const get = async<T extends z.ZodObject<any> | z.ZodArray<any>>(
   }
 }
 
-export const post = async <T extends z.ZodObject<any> | z.ZodArray<any>>(
+export const post = async <
+  T extends z.ZodObject<any> | z.ZodArray<any>,
+  V extends z.ZodObject<any>,
+>(
   url: string,
   {
     data,
-    schema,
+    requestSchema,
+    responseSchema,
     config,
   }: {
-    data: unknown
-    schema: T
+    data: z.infer<V>
+    requestSchema: V
+    responseSchema: T
     config?: Partial<AxiosRequestConfig<any>>
   },
 ): Promise<z.infer<T>> => {
-  const { data: responseData } = await axios.post<T>(url, data, config)
+  const parsedData = requestSchema.parse(data)
+
+  const { data: responseData } = await axios.post<T>(url, parsedData, config)
 
   try {
-    return schema.parse(responseData)
+    return responseSchema.parse(responseData)
   }
   catch (e) {
     if (e instanceof z.ZodError)
@@ -56,22 +63,29 @@ export const post = async <T extends z.ZodObject<any> | z.ZodArray<any>>(
   }
 }
 
-export const put = async <T extends z.ZodObject<any> | z.ZodArray<any>>(
+export const put = async <
+  T extends z.ZodObject<any> | z.ZodArray<any>,
+  V extends z.ZodObject<any>,
+>(
   url: string,
   {
     data,
-    schema,
+    requestSchema,
+    responseSchema,
     config,
   }: {
-    data: unknown
-    schema: T
+    data: z.infer<V>
+    requestSchema: V
+    responseSchema: T
     config?: Partial<AxiosRequestConfig<any>>
   },
 ): Promise<z.infer<T>> => {
-  const { data: responseData } = await axios.put<T>(url, data, config)
+  const parsedData = requestSchema.parse(data)
+
+  const { data: responseData } = await axios.put<T>(url, parsedData, config)
 
   try {
-    return schema.parse(responseData)
+    return responseSchema.parse(responseData)
   }
   catch (e) {
     if (e instanceof z.ZodError)

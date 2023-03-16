@@ -17,7 +17,7 @@
     "story:preview": "histoire preview"
   },
   "dependencies": {
-    "@appwise/forms": "file:/Users/wouter/Documents/projects/forms/appwise-forms-0.0.2.tgz",
+    "@appwise/forms": "^0.0.6",
     "@appwise/vue-oauth2": "^1.0.0",
     "@floating-ui/dom": "^1.0.12",
     "@fontsource/dm-sans": "^4.5.9",
@@ -25,11 +25,11 @@
     "@sentry/vue": "^7.17.4",
     "@vue/runtime-core": "^3.2.39",
     "@wouterlms/composables": "^1.0.0",
+    "@wouterlms/forms": "^1.0.22",
     "axios": "^1.2.3",
     "axios-cache-adapter": "^2.7.3",
     "focus-trap": "^7.2.0",
     "focus-trap-vue": "^4.0.1",
-    "forms@latest": "link:appwise/forms@latest",
     "pinia": "^2.0.29",
     "vue": "^3.2.45",
     "vue-i18n": "^9.2.2",
@@ -71,6 +71,7 @@
     "unplugin-vue-components": "^0.22.7",
     "vite": "^3.1.8",
     "vite-plugin-checker": "^0.5.1",
+    "vite-plugin-pwa": "^0.14.4",
     "vue-tsc": "^1.0.7"
   }
 }

@@ -5,7 +5,7 @@ import useAppButton from './useAppButton'
 import { useBorderRadius, useColor } from '@/composables/ui'
 import { colors } from '@/theme'
 
-import type { ButtonVariant, Rounded } from '@/models'
+import type { Rounded } from '@/models'
 
 interface Props extends BaseProps {
   /**
@@ -21,7 +21,7 @@ interface Props extends BaseProps {
   /**
    * Button styling
    */
-  variant?: ButtonVariant
+  variant?: 'solid' | 'outline' | 'ghost' | 'unstyled'
 
   /**
    * Show icon on the left side
@@ -75,7 +75,7 @@ const { button, state } = useAppButton()
 const { isDarkColor } = useColor()
 
 const computedAccentColor = computed<string>(
-  () => props.accentColor ?? colors.value.text.primary,
+  () => props.accentColor ?? colors.value.accent.primary[500],
 )
 
 const textColor = computed<string>(

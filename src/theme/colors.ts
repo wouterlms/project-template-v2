@@ -99,6 +99,6 @@ const colors = {
   border: {
     input: ['#dcdfe6', '#0a0a0a'],
   },
-}/* satisfies Colors */
+}
 
 export default colors

@@ -2,7 +2,9 @@ import baseColors from './colors'
 
 import { useDarkMode } from '@/composables/ui'
 
-const { isDark } = useDarkMode()
+const { isDark, detectTheme } = useDarkMode()
+
+detectTheme()
 
 export const colors = computed<{
   [K in keyof typeof baseColors]: {

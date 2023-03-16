@@ -51,7 +51,7 @@ export default <T extends z.ZodObject<any>>(
     const url = links.value?.prev ?? urlRef.value
 
     const response = await http.get(url, {
-      schema: z.object({
+      responseSchema: z.object({
         data: z.array(schema),
         links: linksSchema,
         meta: metaSchema,
@@ -74,7 +74,7 @@ export default <T extends z.ZodObject<any>>(
     const url = links.value?.next ?? urlRef.value
 
     const response = await http.get(url, {
-      schema: z.object({
+      responseSchema: z.object({
         data: z.array(schema),
         links: linksSchema,
         meta: metaSchema,

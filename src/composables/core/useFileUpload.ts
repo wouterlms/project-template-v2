@@ -21,7 +21,11 @@ export default (): UseFileUpload => {
         fileName: name,
         mimeType: type,
       },
-      schema: z.object({
+      requestSchema: z.object({
+        fileName: z.string(),
+        mimeType: z.string(),
+      }),
+      responseSchema: z.object({
         id: z.string(),
         url: z.string().url(),
       }),

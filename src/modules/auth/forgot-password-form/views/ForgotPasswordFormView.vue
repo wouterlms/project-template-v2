@@ -5,7 +5,6 @@ import { useForgotPasswordFormService } from '../composables'
 
 import { useForgotPasswordStore } from '@/stores'
 import { forgotPasswordForm } from '@/models'
-import { colors } from '@/theme'
 
 import { Route } from '@/enums'
 
@@ -59,7 +58,6 @@ const hasSentEmail = computed(() => forgotPasswordStore.hasSentEmail)
 
       <FormButton
         :form="form"
-        :accent-color="colors.accent.primary[500]"
         padding="1.2em"
         class="mt-6 w-full"
       >

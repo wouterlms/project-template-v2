@@ -16,7 +16,11 @@ const router = createRouter({
       meta: {
         middleware: [auth],
       },
-      children: [],
+      children: [
+        /**
+         * Authenticated routes
+         */
+      ],
     },
     ...authRoutes,
     {
