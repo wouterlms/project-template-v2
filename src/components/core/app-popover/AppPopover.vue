@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useEventListener } from '@wouterlms/composables'
+import { useEventListener, useVModel } from '@wouterlms/composables'
 
 import type { Placement } from '@floating-ui/dom'
 
@@ -11,6 +11,7 @@ import { colors } from '@/theme'
 import type { Rounded } from '@/models'
 
 interface Props {
+  show?: boolean
   position?: Placement
   margin?: number
   offset?: number
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  show: false,
   position: 'bottom',
   margin: 0,
   offset: 0,
@@ -34,7 +36,8 @@ const props = withDefaults(defineProps<Props>(), {
   backgroundColor: undefined,
 })
 
-const isPopoverVisible = ref(false)
+const isPopoverVisible = props.show == null ? ref(false) : useVModel(toRef(props, 'show'), 'show')
+
 const previouslyFocusedElement = ref<HTMLElement | null>(null)
 
 const container = ref<HTMLElement | null>(null)

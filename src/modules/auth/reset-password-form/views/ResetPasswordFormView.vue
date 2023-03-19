@@ -21,7 +21,8 @@ const { email } = route.query
 const isMobileDevice = useIsMobileDevice()
 
 const loginStore = useLoginStore()
-const isReset = ref(false)
+
+const hasPasswordBeenReset = ref(false)
 
 const signInWithNewCredentials = async (email: string, password: string): Promise<void> => {
   await auth.signIn(email, password)
@@ -34,8 +35,12 @@ const signInWithNewCredentials = async (email: string, password: string): Promis
 
 const { submitForm } = useResetPasswordFormService({
   onSuccess: async (email, password) => {
+    /**
+     * If the user is using a mobile device, we won't sign them in automatically.
+     * This is because the website might just be a cms where the user does not have access to.
+     */
     if (isMobileDevice)
-      isReset.value = true
+      hasPasswordBeenReset.value = true
     else
       await signInWithNewCredentials(email, password)
   },
@@ -49,7 +54,7 @@ if (token == null || email == null)
   showToastMessage(t('auth.reset_password_form.this_is_not_a_valid'))
 
 const description = computed(() => {
-  if (isReset.value)
+  if (hasPasswordBeenReset.value)
     return t('auth.reset_password_form.your_password_has_been_reset_you_can')
 
   return t('auth.reset_password_form.enter_your_new_password')
@@ -62,7 +67,7 @@ const description = computed(() => {
     :description="description"
   >
     <FormElement
-      v-if="!isReset"
+      v-if="!hasPasswordBeenReset"
       :form="form"
     >
       <FormSpacer>

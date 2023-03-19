@@ -1,10 +1,6 @@
 import { z } from 'zod'
+import { user } from '../users'
 
-export const profile = z.object({
-  id: z.string().uuid(),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email(),
-})
+export const profile = z.object({}).merge(user)
 
 export type Profile = z.infer<typeof profile>

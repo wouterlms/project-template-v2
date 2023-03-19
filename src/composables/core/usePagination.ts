@@ -23,7 +23,7 @@ const linksSchema = z.object({
 type Meta = z.infer<typeof metaSchema>
 type Links = z.infer<typeof linksSchema>
 
-interface UsePagination<T> {
+export interface UsePagination<T> {
   data: T[]
   meta: Nullable<Meta>
   isLoading: boolean

@@ -3,11 +3,15 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const themeSwapper = require('tailwindcss-theme-swapper')
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { tailwindcssOriginSafelist } = require('@headlessui-float/vue')
+
 module.exports = {
   content: [
     './index.html',
     './src/**/*.{vue,ts}',
   ],
+  safelist: [...tailwindcssOriginSafelist],
   theme: {
     extend: {
       zIndex: {
