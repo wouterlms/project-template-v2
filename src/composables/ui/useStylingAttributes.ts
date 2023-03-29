@@ -13,7 +13,9 @@ interface StylingAttrs {
 export default () => {
   const attrs = useAttrs()
 
-  const nonStylingAttrs = computed(() => ({
+  const nonStylingAttrs = computed<{
+    [key: string]: unknown
+  }>(() => ({
     ...attrs,
     class: undefined,
     style: undefined,

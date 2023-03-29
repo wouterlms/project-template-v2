@@ -3,7 +3,7 @@ import { usePageLoader } from '@/composables'
 
 const { progress, showProgressBar } = usePageLoader()
 
-const transitionDuration = ref(1000)
+const transitionDuration = ref<number>(1000)
 
 watch(progress, () => {
   if (progress.value === 0) {

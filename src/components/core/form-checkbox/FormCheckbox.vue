@@ -10,14 +10,16 @@ import {
   useComponentAttrs,
 } from '@/composables/ui'
 
-import { colors } from '@/theme'
+import { colors, getColor } from '@/theme'
+
+import type { Color } from '@/theme'
 import type { Rounded } from '@/models'
 
 interface Props extends BaseProps {
   hasError?: boolean
-  accentColor?: string
-  backgroundColor?: string
-  borderColor?: string
+  accentColor?: Color | string
+  backgroundColor?: Color | string
+  borderColor?: Color | string
 
   rounded?: Rounded
 }
@@ -42,30 +44,36 @@ const {
 } = useComponentAttrs()
 
 const computedAccentColor = computed<string>(
-  () => props.accentColor ?? colors.value.accent.primary,
+  () => props.accentColor == null
+    ? colors['accent-primary']
+    : getColor(props.accentColor),
 )
 
 const computedBackgroundColor = computed<string>(() => {
   if (state.value.isChecked) {
     if (props.hasError)
-      return colors.value.accent.danger[500]
+      return colors['accent-danger']
 
     return computedAccentColor.value
   }
 
-  return props.backgroundColor ?? colors.value.background.input
+  return props.backgroundColor == null
+    ? colors['bg-input']
+    : getColor(props.backgroundColor)
 })
 
 const computedBorderColor = computed<string>(() => {
   if (props.hasError)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
   const { isChecked, isFocused } = state.value
 
   if (isChecked || isFocused)
     return computedAccentColor.value
 
-  return props.borderColor ?? colors.value.accent.primary[100]
+  return props.borderColor == null
+    ? colors['border-input']
+    : getColor(props.borderColor)
 })
 
 const computedTickColor = computed<string>(
@@ -133,7 +141,7 @@ export default {
     <span
       v-if="slots.default"
       :class="[
-        hasError ? 'text-error' : 'text-secondary',
+        hasError ? 'text-accent-danger' : 'text-secondary',
         {
           'opacity-50': state.isDisabled,
         },

@@ -1,12 +1,15 @@
+import type { z } from 'zod'
+import { authService } from '../../../services'
 import { transformApiErrors } from '@/utils'
-import { authService } from '@/services'
 
 import type { ForgotPasswordForm } from '@/models'
 
 type UseForgotPasswordFormService = (
   { onSuccess }: { onSuccess: () => void | Promise<void> }
 ) => {
-  submitForm: (data: ForgotPasswordForm) => Promise<any>
+  submitForm: (
+    data: ForgotPasswordForm
+  ) => Promise<Nullable<z.ZodFormattedError<ForgotPasswordForm>>>
 }
 
 const useForgotPasswordForm: UseForgotPasswordFormService = ({ onSuccess }) => {

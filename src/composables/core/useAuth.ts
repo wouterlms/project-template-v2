@@ -4,7 +4,7 @@ import type { UseAuth } from '@appwise/vue-oauth2'
 
 import router from '@/router'
 
-import { useAuthStore } from '@/stores'
+import { useAuthStore } from '@/modules/auth/stores'
 
 import { Route } from '@/enums'
 import { profile } from '@/models'

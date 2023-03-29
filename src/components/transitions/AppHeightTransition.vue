@@ -5,7 +5,7 @@ interface Props {
 
 const { duration = 500 } = defineProps<Props>()
 
-const heightTransition = computed(() => `${duration}ms`)
+const heightTransition = computed<string>(() => `${duration}ms`)
 
 const handleEnter = (element: HTMLElement): void => {
   const { width } = getComputedStyle(element)

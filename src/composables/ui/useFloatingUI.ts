@@ -44,13 +44,13 @@ const useFloatingUI: UseFloatingUI = (
   { isFloatingElementVisible, referenceEl, floatingEl, arrowEl, options }) => {
   let cleanup: (() => void) | null = null
 
-  const positionX = ref(0)
-  const positionY = ref(0)
+  const positionX = ref<number>(0)
+  const positionY = ref<number>(0)
 
   const arrowPositionX = ref<number | null>(0)
   const arrowPositionY = ref<number | null>(0)
 
-  const width = ref(0)
+  const width = ref<number>(0)
   const actualPosition = ref<CSSPosition>(CSSPosition.BOTTOM)
 
   const getMiddleware = (): Middleware[] => {

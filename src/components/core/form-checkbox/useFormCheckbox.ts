@@ -1,3 +1,4 @@
+import type { VNode } from 'vue'
 import { useVModel } from '@wouterlms/composables'
 
 import { usePropsWithDefaults } from '@/composables/ui'
@@ -35,7 +36,7 @@ export default () => {
 
   const checkboxValue = useVModel(toRef(useAttrs(), 'modelValue'))
 
-  const isFocused = ref(false)
+  const isFocused = ref<boolean>(false)
 
   const isChecked = computed<boolean>({
     get() {
@@ -70,7 +71,7 @@ export default () => {
     isChecked.value = !isChecked.value
   }
 
-  const checkbox = computed(() => {
+  const checkbox = computed<VNode>(() => {
     const {
       isDisabled,
       isReadonly,
@@ -109,7 +110,11 @@ export default () => {
 
   return {
     checkbox,
-    state: computed(() => ({
+    state: computed<{
+      isChecked: boolean
+      isFocused: boolean
+      isDisabled: boolean
+    }>(() => ({
       isChecked: isChecked.value,
       isFocused: isFocused.value,
       isDisabled: props.value.isDisabled,

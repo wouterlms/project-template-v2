@@ -8,7 +8,6 @@ import { useBorderRadius, useFloatingUI } from '@/composables/ui'
 import { clickOutside as vClickOutside } from '@/directives'
 
 import { colors } from '@/theme'
-import type { Rounded } from '@/models'
 
 interface Props {
   show?: boolean
@@ -19,8 +18,13 @@ interface Props {
   inheritWidth?: boolean
   showArrow?: boolean
   container?: HTMLElement
-  rounded?: Rounded
   backgroundColor?: string
+
+  /**
+   * The border radius of the popover.
+   * Defaults to 'rounded'.
+   */
+  rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -32,11 +36,13 @@ const props = withDefaults(defineProps<Props>(), {
   inheritWidth: false,
   showArrow: true,
   container: undefined,
-  rounded: 'sm',
   backgroundColor: undefined,
+  rounded: 'rounded',
 })
 
-const isPopoverVisible = props.show == null ? ref(false) : useVModel(toRef(props, 'show'), 'show')
+const isPopoverVisible = props.show == null
+  ? ref<boolean>(false)
+  : useVModel(toRef(props, 'show'), 'show')
 
 const previouslyFocusedElement = ref<HTMLElement | null>(null)
 
@@ -53,11 +59,17 @@ const {
   arrowPositionY,
   width,
 } = useFloatingUI({
-  isFloatingElementVisible: computed(() => isPopoverVisible.value),
-  floatingEl: computed(() => popover.value ?? null),
-  referenceEl: computed(() => button.value ?? null),
-  arrowEl: computed(() => arrow.value ?? null),
-  options: reactive({
+  isFloatingElementVisible: computed<boolean>(() => isPopoverVisible.value),
+  floatingEl: computed<Nullable<HTMLElement>>(() => popover.value ?? null),
+  referenceEl: computed<Nullable<HTMLElement>>(() => button.value ?? null),
+  arrowEl: computed<Nullable<HTMLElement>>(() => arrow.value ?? null),
+  options: reactive<{
+    margin: number
+    offset: number
+    position: Placement
+    container: HTMLElement
+    containerPadding: number
+  }>({
     margin: props.margin,
     offset: props.offset,
     position: props.position,
@@ -80,7 +92,7 @@ onMounted(() => {
 })
 
 const computedBackgroundColor = computed<string>(() => (
-  props.backgroundColor ?? colors.value.background.primary
+  props.backgroundColor ?? colors['bg-primary']
 ))
 
 const closeAndFocusButton = (): void => {
@@ -121,13 +133,13 @@ useEventListener(document, 'focusin', () => {
         v-if="isPopoverVisible"
         ref="popover"
         v-click-outside="() => isPopoverVisible = false"
+        :class="rounded"
         :style="{
           [actualPosition]: 'auto',
           top: `${positionY}px`,
           left: `${positionX}px`,
           width: inheritWidth ? `${width}px` : undefined,
           backgroundColor: computedBackgroundColor,
-          borderRadius: useBorderRadius(),
         }"
         class="shadow-primary absolute"
       >

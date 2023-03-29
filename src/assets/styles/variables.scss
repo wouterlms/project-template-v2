@@ -1,0 +1,141 @@
+:root {
+  --accent-primary: 97, 147, 255;
+
+  --accent-success-100: 217, 240, 230;
+  --accent-success-200: 180, 225, 205;
+  --accent-success-300: 142, 211, 179;
+  --accent-success-400: 105, 196, 154;
+  --accent-success-500: 67, 181, 129;
+  --accent-success-600: 54, 145, 103;
+  --accent-success-700: 40, 109, 77;
+  --accent-success-800: 27, 72, 52;
+  --accent-success-900: 13, 36, 26;
+  --accent-success: var(--accent-success-500);
+
+  --accent-warning-100: 250, 236, 216;
+  --accent-warning-200: 245, 218, 177;
+  --accent-warning-300: 240, 199, 138;
+  --accent-warning-400: 235, 181, 99;
+  --accent-warning-500: 230, 162, 60;
+  --accent-warning-600: 184, 130, 48;
+  --accent-warning-700: 138, 97, 36;
+  --accent-warning-800: 92, 65, 24;
+  --accent-warning-900: 46, 32, 12;
+  --accent-warning: var(--accent-warning-500);
+
+  --accent-danger-100: 253, 226, 226;
+  --accent-danger-200: 251, 196, 196;
+  --accent-danger-300: 249, 167, 167;
+  --accent-danger-400: 247, 137, 137;
+  --accent-danger-500: 245, 108, 108;
+  --accent-danger-600: 196, 86, 86;
+  --accent-danger-700: 147, 65, 65;
+  --accent-danger-800: 98, 43, 43;
+  --accent-danger-900: 49, 22, 22;
+  --accent-danger: var(--accent-danger-500);
+
+  --neutral-50: 250, 250, 250;
+  --neutral-100: 245, 245, 245;
+  --neutral-200: 229, 229, 229;
+  --neutral-300: 212, 212, 212;
+  --neutral-400: 163, 163, 163;
+  --neutral-500: 115, 115, 115;
+  --neutral-600: 82, 82, 82;
+  --neutral-700: 64, 64, 64;
+  --neutral-800: 38, 38, 38;
+  --neutral-900: 23, 23, 23;
+  --neutral: var(--neutral-500);
+
+  --text-primary: 39, 44, 51;
+  --text-primary-inverted: 255, 255, 255;
+  --text-secondary: 91, 101, 115;
+  --text-secondary-inverted: 214, 214, 214;
+  --text-tertiary: 113, 128, 150;
+  --text-tertiary-inverted: 150, 150, 150;
+  --text-input: 96, 98, 102;
+  --text-input-placeholder: 192, 196, 204;
+  --text-input-disabled: 192, 196, 204;
+
+  --bg-primary: 255, 255, 255;
+  --bg-primary-inverted: 28, 28, 30;
+  --bg-secondary: 248, 249, 253;
+  --bg-secondary-inverted: 44, 44, 46;
+  --bg-tertiary: 239, 239, 244;
+  --bg-tertiary-inverted: 58, 58, 60;
+  --bg-input: 255, 255, 255;
+  --bg-switch: 221, 223, 230;
+  --bg-input-disabled: 247, 250, 252;
+
+  --border-input: 220, 223, 230;
+}
+
+.dark {
+  --accent-primary: 97, 147, 255;
+
+  --accent-success-100: 217, 240, 230;
+  --accent-success-200: 180, 225, 205;
+  --accent-success-300: 142, 211, 179;
+  --accent-success-400: 105, 196, 154;
+  --accent-success-500: 67, 181, 129;
+  --accent-success-600: 54, 145, 103;
+  --accent-success-700: 40, 109, 77;
+  --accent-success-800: 27, 72, 52;
+  --accent-success-900: 13, 36, 26;
+  --accent-success: var(--accent-success-500);
+
+  --accent-warning-100: 250, 236, 216;
+  --accent-warning-200: 245, 218, 177;
+  --accent-warning-300: 240, 199, 138;
+  --accent-warning-400: 235, 181, 99;
+  --accent-warning-500: 230, 162, 60;
+  --accent-warning-600: 184, 130, 48;
+  --accent-warning-700: 138, 97, 36;
+  --accent-warning-800: 92, 65, 24;
+  --accent-warning-900: 46, 32, 12;
+  --accent-warning: var(--accent-warning-500);
+
+  --accent-danger-100: 253, 226, 226;
+  --accent-danger-200: 251, 196, 196;
+  --accent-danger-300: 249, 167, 167;
+  --accent-danger-400: 247, 137, 137;
+  --accent-danger-500: 245, 108, 108;
+  --accent-danger-600: 196, 86, 86;
+  --accent-danger-700: 147, 65, 65;
+  --accent-danger-800: 98, 43, 43;
+  --accent-danger-900: 49, 22, 22;
+  --accent-danger: var(--accent-danger-500);
+
+  --neutral-50: 15, 15, 15;
+  --neutral-100: 23, 23, 23;
+  --neutral-200: 38, 38, 38;
+  --neutral-300: 64, 64, 64;
+  --neutral-400: 82, 82, 82;
+  --neutral-500: 115, 115, 115;
+  --neutral-600: 245, 245, 245;
+  --neutral-700: 229, 229, 229;
+  --neutral-800: 212, 212, 212;
+  --neutral-900: 163, 163, 163;
+  --neutral: var(--neutral-500);
+
+  --text-primary: 255, 255, 255;
+  --text-primary-inverted: 39, 44, 51;
+  --text-secondary: 214, 214, 214;
+  --text-secondary-inverted: 91, 101, 115;
+  --text-tertiary: 150, 150, 150;
+  --text-tertiary-inverted: 113, 128, 150;
+  --text-input: 192, 196, 204;
+  --text-input-placeholder: 96, 98, 102;
+  --text-input-disabled: 96, 98, 102;
+
+  --bg-primary: 23, 23, 23;
+  --bg-primary-inverted: 255, 255, 255;
+  --bg-secondary: 44, 44, 46;
+  --bg-secondary-inverted: 248, 249, 253;
+  --bg-tertiary: 58, 58, 60;
+  --bg-tertiary-inverted: 239, 239, 244;
+  --bg-input: 20, 20, 20;
+  --bg-input-disabled: 20, 20, 20;
+  --bg-switch: 57, 56, 60;
+
+  --border-input: 10, 10, 10;
+}

@@ -3,7 +3,7 @@ import { useToasts } from '@/composables'
 
 const { toast } = useToasts()
 
-const showToast = computed(() => toast.value !== null)
+const showToast = computed<boolean>(() => toast.value !== null)
 </script>
 
 <template>
@@ -12,7 +12,7 @@ const showToast = computed(() => toast.value !== null)
     mode="out-in"
   >
     <div
-      v-if="showToast"
+      v-if="showToast && toast !== null"
       :key="toast.id"
       class="bg-primary-inverted
         text-primary-inverted

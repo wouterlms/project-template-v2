@@ -1,3 +1,4 @@
+import type { VNode } from 'vue'
 import appTabsInjectionSymbol from './appTabsInjectionSymbol'
 
 export interface Props {
@@ -25,19 +26,19 @@ export default () => {
     unregisterTab(props.value)
   })
 
-  const isSelected = computed(
+  const isSelected = computed<boolean>(
     () => selectedTab.value !== null
       && JSON.stringify(selectedTab.value) === JSON.stringify(props.value),
   )
 
-  const tab = computed(() => h('button', {
+  const tab = computed<VNode>(() => h('button', {
     type: 'button',
     onClick: () => selectTab(props.value),
   }))
 
   return {
     tab,
-    state: computed(() => ({
+    state: computed<{ isSelected: boolean }>(() => ({
       isSelected: isSelected.value,
     })),
   }

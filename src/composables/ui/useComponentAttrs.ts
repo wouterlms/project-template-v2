@@ -14,7 +14,9 @@ interface StylingAttrs {
 export default () => {
   const attrs = useAttrs()
 
-  const listenerAttrs = computed(() => {
+  const listenerAttrs = computed<{
+    [key: string]: unknown
+  }>(() => {
     const onAttrs: Record<string, unknown> = {}
 
     Object.entries(attrs).forEach(([
@@ -28,7 +30,9 @@ export default () => {
     return onAttrs
   })
 
-  const nonStylingAttrs = computed(() => ({
+  const nonStylingAttrs = computed<{
+    [key: string]: unknown
+  }>(() => ({
     ...attrs,
     class: undefined,
     style: undefined,

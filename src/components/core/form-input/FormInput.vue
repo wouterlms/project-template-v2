@@ -86,46 +86,46 @@ const {
 
 const isKeyboardMode = useIsKeyboardMode()
 
-const hasError = computed(() => errors != null && errors._errors.length > 0 && isTouched)
+const hasError = computed<boolean>(() => errors != null && errors._errors.length > 0 && isTouched)
 
 const iconColor = computed<string>(() => {
   if (hasError.value)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
-  return colors.value.text.tertiary
+  return colors['text-tertiary']
 })
 
 const color = computed<string>(() => {
   const { isDisabled } = state.value
 
   if (isDisabled)
-    return colors.value.text.inputDisabled
+    return colors['text-input-disabled']
 
   if (hasError.value)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
-  return colors.value.text.input
+  return colors['text-input']
 })
 
 const computedBorderColor = computed<string>(() => {
   const { isFocused } = state.value
 
   if (hasError.value)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
   if (isFocused)
-    return colors.value.accent.primary
+    return colors['accent-primary']
 
-  return borderColor ?? colors.value.border.input
+  return borderColor ?? colors['border-input']
 })
 
 const backgroundColor = computed<string>(() => {
   const { isDisabled } = state.value
 
   if (isDisabled === true)
-    return colors.value.background.inputDisabled
+    return colors['bg-input-disabled']
 
-  return colors.value.background.input
+  return colors['bg-input']
 })
 </script>
 
@@ -194,7 +194,7 @@ export default {
 
       <AppLoader
         v-if="state.isLoading"
-        :accent-color="colors.text.input"
+        :accent-color="colors['text-input']"
         class="mr-[1em] text-[0.8em]"
       />
 
@@ -215,7 +215,7 @@ export default {
           : icons.EYE_SLASH"
         :is-disabled="state.isDisabled || state.isReadonly"
         :accent-color="color"
-        rounded="sm"
+        rounded="rounded-sm"
         variant="ghost"
         padding="0.2em"
         class="mr-[0.5em]"

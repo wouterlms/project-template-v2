@@ -17,6 +17,8 @@
   "common.reset_password": "Reset password",
   "common.sign_in": "Sign in",
 
+  "core.no_results_found": "No results found",
+
   "layout.loading_form": "Loading form",
 
   "static.page_title.forgot_password": "Forgot password",

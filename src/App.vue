@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useTitle } from '@wouterlms/composables'
 
+import { z } from 'zod'
 import {
   usePageTitle,
+  usePagination,
   useRouterUtils,
   useServerErrorInterceptor,
 } from '@/composables'
@@ -18,42 +20,36 @@ initialiseStoreResets()
 
 setTemplate('{title} | App')
 
-const value = ref(null)
+const value = ref<boolean>(false)
+
+const user = z.object({
+  id: z.string(),
+  name: z.string(),
+})
+
+const usersPaginator = usePagination('/business-pages', user, {
+  name: 'test',
+})
+
+setTimeout(async () => {
+  await usersPaginator.next()
+
+  console.log(usersPaginator.data[0])
+}, 1000)
 </script>
 
 <template>
-  <div class="h-screen" />
   <div class="p-24">
-    <div>
-      <FormSelect
-        v-model="value"
-        class="w-52"
-      >
-        <template #value="{ value }">
-          {{ value }}
-        </template>
-
-        <FormSelectOption
-          v-for="i of 10"
-          :key="i"
-          :value="i"
-        >
-          Value {{ i }}
-        </FormSelectOption>
-      </FormSelect>
-    </div>
-
-    <div class="mt-8">
-      <FormInput
-        :model-value="null"
-        class="w-52"
-      />
-    </div>
+    <FormRadio
+      v-model="value"
+      :value="true"
+      accent-color="text-tertiary"
+    >
+      Checkbox
+    </FormRadio>
   </div>
-  <div class="h-screen" />
-  <!--
-    <AppPageLoader />
-    <RouterView />
-    <AppToasts />
-  -->
+
+  <AppPageLoader />
+  <RouterView />
+  <AppToasts />
 </template>

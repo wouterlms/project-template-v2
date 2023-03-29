@@ -1,17 +1,15 @@
 <script setup lang="ts">
 interface Props {
-  shouldTruncate?: boolean
+  truncate?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
-  shouldTruncate: true,
-})
+const { truncate = false } = defineProps<Props>()
 </script>
 
 <template>
   <div
     :class="{
-      truncate: shouldTruncate,
+      truncate,
     }"
     class="text-sm leading-5"
   >

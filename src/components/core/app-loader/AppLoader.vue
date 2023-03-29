@@ -1,29 +1,37 @@
 <script setup lang="ts">
-import { colors } from '@/theme'
+import { colors, getColor } from '@/theme'
 
 interface Props {
   accentColor?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  accentColor: undefined,
-})
+const { accentColor } = defineProps<Props>()
 
-const computedAccentColor = computed<string>(() => (
-  props.accentColor ?? colors.value.text.primary
-))
+const computedAccentColor = computed<string>(
+  () => accentColor == null ? colors['text-primary'] : getColor(accentColor),
+)
+
+const rgbToRgba = (rgb: string, alpha: number): string => {
+  const [
+    , r, g, b,
+  ] = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/) ?? []
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
 </script>
 
 <template>
   <div class="flex flex-col items-center">
+    <!-- eslint-disable tailwindcss/no-custom-classname -->
     <div
       :style="{
-        borderColor: `${computedAccentColor}50`,
+        borderColor: rgbToRgba(computedAccentColor, 0.5),
         borderRightColor: computedAccentColor,
         borderTopColor: computedAccentColor,
       }"
       class="spin h-[1em] w-[1em] rounded-full border border-solid text-center"
     />
+    <!-- eslint-enable tailwindcss/no-custom-classname -->
 
     <div
       v-if="$slots.default"

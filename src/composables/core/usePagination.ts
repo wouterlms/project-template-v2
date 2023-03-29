@@ -1,6 +1,4 @@
 import { z } from 'zod'
-import type { Ref } from 'vue'
-
 import { http } from '@/plugins'
 
 const metaSchema = z.object({
@@ -23,24 +21,40 @@ const linksSchema = z.object({
 type Meta = z.infer<typeof metaSchema>
 type Links = z.infer<typeof linksSchema>
 
-export interface UsePagination<T> {
-  data: T[]
+export type UsePagination = <T extends z.ZodObject<any>>(
+  url: string,
+  schema: T,
+  queryParams?: Record<string, Nullable<string | number>>
+) => {
+  data: Array<z.infer<T>>
   meta: Nullable<Meta>
   isLoading: boolean
   previous: () => Promise<void>
   next: () => Promise<void>
 }
 
-export default <T extends z.ZodObject<any>>(
-  url: string | Ref<string>,
+const usePagination: UsePagination = <T extends z.ZodObject<any>>(
+  url: string,
   schema: T,
-): UsePagination<z.infer<T>> => {
-  const urlRef = isRef(url) ? url : ref(url)
+  queryParams?: Record<string, Nullable<string | number>>,
+) => {
+  const urlWithQueryParams = computed<string>(() => {
+    const filteredQueryParams = Object.fromEntries(
+      Object.entries(queryParams ?? {}).filter(([, value]) => value !== null),
+    ) as Record<string, string>
+
+    const params = new URLSearchParams(filteredQueryParams)
+
+    if (params.toString() === '')
+      return url
+
+    return `${url}?${params.toString()}`
+  })
 
   const links = ref<Nullable<Links>>(null)
   const meta = ref<Nullable<Meta>>(null)
   const data = ref<z.infer<z.ZodArray<T>>>([])
-  const isLoading = ref(false)
+  const isLoading = ref<boolean>(false)
 
   const previous = async (): Promise<void> => {
     if (isLoading.value || links.value?.prev === null)
@@ -48,7 +62,7 @@ export default <T extends z.ZodObject<any>>(
 
     isLoading.value = true
 
-    const url = links.value?.prev ?? urlRef.value
+    const url = links.value?.prev ?? urlWithQueryParams.value
 
     const response = await http.get(url, {
       responseSchema: z.object({
@@ -71,7 +85,7 @@ export default <T extends z.ZodObject<any>>(
 
     isLoading.value = true
 
-    const url = links.value?.next ?? urlRef.value
+    const url = links.value?.next ?? urlWithQueryParams.value
 
     const response = await http.get(url, {
       responseSchema: z.object({
@@ -92,13 +106,14 @@ export default <T extends z.ZodObject<any>>(
     isLoading.value = false
   }
 
-  watch(urlRef, () => {
+  watch(urlWithQueryParams, () => {
     links.value = null
     meta.value = null
     void next(true)
   })
 
-  return reactive<any>({
+  // eslint-disable-next-line require-explicit-generics/require-explicit-generics
+  return reactive({
     data,
     meta,
     isLoading,
@@ -106,3 +121,5 @@ export default <T extends z.ZodObject<any>>(
     next,
   })
 }
+
+export default usePagination

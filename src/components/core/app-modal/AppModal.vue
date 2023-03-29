@@ -3,11 +3,8 @@ import { GAMING_XMARK } from '@wouterlms/icons'
 
 import AppModalOverlay from './AppModalOverlay.vue'
 
-import type { Props as BaseProps } from './useAppModal'
+import type { BaseProps } from './useAppModal'
 import useAppModal from './useAppModal'
-
-import { useBorderRadius } from '@/composables/ui'
-import type { Rounded } from '@/models'
 
 interface Props extends BaseProps {
   /**
@@ -26,17 +23,18 @@ interface Props extends BaseProps {
   hasBackgroundBlur?: boolean
 
   /**
-   * Border radius
+   * The border radius of the button.
+   * Defaults to 'rounded-md'.
    */
-  rounded?: Rounded
+  rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  showCloseButton: true,
-  closeOnClickOutside: true,
-  hasBackgroundBlur: false,
-  rounded: 'default',
-})
+const {
+  showCloseButton = true,
+  closeOnClickOutside = true,
+  hasBackgroundBlur = false,
+  rounded = 'rounded-md',
+} = defineProps<Props>()
 
 const {
   modalWrapper,
@@ -45,7 +43,7 @@ const {
 } = useAppModal()
 
 const handleOverlayClicked = (): void => {
-  if (props.closeOnClickOutside)
+  if (closeOnClickOutside)
     close()
 }
 </script>
@@ -62,9 +60,7 @@ export default {
       <div
         v-if="state.isVisible"
         v-bind="$attrs"
-        :style="{
-          borderRadius: useBorderRadius(),
-        }"
+        :class="rounded"
         class="bg-primary
         fixed
         left-1/2
@@ -82,7 +78,7 @@ export default {
         <AppFocusable
           v-if="showCloseButton"
           type="button"
-          class="bg-gray-secondary absolute right-3 top-3 rounded-full p-1"
+          class="absolute right-3 top-3 rounded-full bg-neutral-200 p-1"
           @click="close"
         >
           <AppIcon

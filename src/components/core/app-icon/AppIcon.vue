@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Color } from '@/theme'
+
 interface Props {
   /**
    * Icon
@@ -13,13 +15,14 @@ interface Props {
   /**
    * Secondary color
    */
-  secondaryColor?: string
+  secondaryColor?: Color | string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  preserveOriginalColor: false,
-  secondaryColor: 'transparent',
-})
+const {
+  icon,
+  preserveOriginalColor = false,
+  secondaryColor = 'transparent',
+} = defineProps<Props>()
 
 const removeHexColors = (path: string): string => {
   let pathWithoutHexCodes = path
@@ -34,8 +37,6 @@ const removeHexColors = (path: string): string => {
 }
 
 const viewBox = computed<Nullable<string>>(() => {
-  const { icon } = props
-
   const wrapper = document.createElement('div')
 
   wrapper.innerHTML = icon
@@ -46,12 +47,6 @@ const viewBox = computed<Nullable<string>>(() => {
 })
 
 const paths = computed<string>(() => {
-  const {
-    icon,
-    preserveOriginalColor,
-    secondaryColor,
-  } = props
-
   const wrapper = document.createElement('div')
 
   wrapper.innerHTML = icon

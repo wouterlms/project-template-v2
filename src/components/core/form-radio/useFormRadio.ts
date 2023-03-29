@@ -1,4 +1,5 @@
 import { useVModel } from '@wouterlms/composables'
+import type { VNode } from 'vue'
 import { usePropsWithDefaults } from '@/composables/ui'
 
 export interface Props {
@@ -34,8 +35,8 @@ export default () => {
   const props = usePropsWithDefaults(defaultProps, useAttrs() as unknown as Props)
 
   const radioValue = useVModel(toRef(useAttrs(), 'modelValue'))
-  const isFocused = ref(false)
-  const isChecked = computed(() => (
+  const isFocused = ref<boolean>(false)
+  const isChecked = computed<boolean>(() => (
     JSON.stringify(radioValue.value) === JSON.stringify(props.value.value)
   ))
 
@@ -44,7 +45,7 @@ export default () => {
       radioValue.value = props.value.value
   }
 
-  const radio = computed(() => {
+  const radio = computed<VNode>(() => {
     const {
       isDisabled,
       isReadonly,
@@ -83,7 +84,11 @@ export default () => {
 
   return {
     radio,
-    state: computed(() => ({
+    state: computed<{
+      isChecked: boolean
+      isFocused: boolean
+      isDisabled: boolean
+    }>(() => ({
       isChecked: isChecked.value,
       isFocused: isFocused.value,
       isDisabled: props.value.isDisabled,

@@ -3,8 +3,8 @@ import { useForm } from '@appwise/forms'
 import { useIsMobileDevice } from '@wouterlms/composables'
 
 import { useResetPasswordFormService } from '../composables'
+import { useLoginStore } from '../../../stores'
 
-import { useLoginStore } from '@/stores'
 import { useAuth, useToasts } from '@/composables'
 
 import { resetPasswordForm } from '@/models'
@@ -22,7 +22,7 @@ const isMobileDevice = useIsMobileDevice()
 
 const loginStore = useLoginStore()
 
-const hasPasswordBeenReset = ref(false)
+const hasPasswordBeenReset = ref<boolean>(false)
 
 const signInWithNewCredentials = async (email: string, password: string): Promise<void> => {
   await auth.signIn(email, password)
@@ -47,13 +47,15 @@ const { submitForm } = useResetPasswordFormService({
 })
 
 const form = useForm(resetPasswordForm, {
-  onSubmit: submitForm,
+  onSubmit: (values) => {
+    submitForm(values)
+  },
 })
 
 if (token == null || email == null)
   showToastMessage(t('auth.reset_password_form.this_is_not_a_valid'))
 
-const description = computed(() => {
+const description = computed<string>(() => {
   if (hasPasswordBeenReset.value)
     return t('auth.reset_password_form.your_password_has_been_reset_you_can')
 

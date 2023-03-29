@@ -7,10 +7,13 @@ const { value } = defineProps<Props>()
 
 const wrapperEl = ref<HTMLElement | null>(null)
 const appendContentEl = ref<HTMLElement | null>(null)
-const maxWidth = ref('0px')
-const isMounted = ref(false)
+const maxWidth = ref<string>('0px')
+const isMounted = ref<boolean>(false)
 
-const style = reactive({
+const style = reactive<{
+  fontSize: string
+  paddingLeft: string
+}>({
   fontSize: '0px',
   paddingLeft: '0px',
 })

@@ -20,12 +20,14 @@ const {
 
 const labelColor = computed<string>(() => {
   if (errors != null && errors._errors.length > 0 && isTouched)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
-  return textColor ?? colors.value.text.secondary
+  return textColor ?? colors['text-secondary']
 })
 
-const showErrorMessage = computed(() => errors != null && errors._errors.length > 0 && isTouched)
+const showErrorMessage = computed<boolean>(
+  () => errors != null && errors._errors.length > 0 && isTouched,
+)
 </script>
 
 <template>
@@ -47,9 +49,9 @@ const showErrorMessage = computed(() => errors != null && errors._errors.length 
         <div class="mt-0.5 flex items-center gap-x-2">
           <AppIcon
             :icon="PRIVACY_AND_SECURITY_EXCLAMATIONMARK_TRIANGLE_FILL"
-            :secondary-color="colors.background.primary"
+            :secondary-color="colors['bg-primary']"
             :style="{
-              color: colors.accent.danger[500],
+              color: colors['accent-danger'],
             }"
             class="w-3.5"
           />
@@ -57,7 +59,7 @@ const showErrorMessage = computed(() => errors != null && errors._errors.length 
           <span
             v-if="errors != null"
             :style="{
-              color: colors.accent.danger[500],
+              color: colors['accent-danger'],
             }"
             class="text-sm"
           >

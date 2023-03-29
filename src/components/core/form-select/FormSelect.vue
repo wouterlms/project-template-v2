@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import {
+  Combobox,
+  ComboboxButton,
+  ComboboxInput,
+  ComboboxOptions,
   Listbox,
   ListboxButton,
   ListboxOptions,
@@ -9,70 +13,155 @@ import { useVModel } from '@wouterlms/composables'
 import { ARROWS_CHEVRON_DOWN } from '@wouterlms/icons'
 import { Float } from '@headlessui-float/vue'
 
+import FormLabel from '../form-label/FormLabel.vue'
 import { colors } from '@/theme'
 import { useIsKeyboardMode } from '@/composables/ui'
 
 interface Props {
+  /**
+   * The current value of the input
+   */
   modelValue: any
-  errors?: { _errors: string[] }
+
+  /**
+   * Function that converts the input value to a string for display
+   * @param value The value of the input
+   * @returns A string representation of the value
+   */
+  displayValue: (value: any) => string
+
+  /**
+   * Any errors associated with the input
+   */
+  errors?: {
+    _errors: string[]
+  }
+
+  /**
+   * Whether the input should be filterable / searchable
+   */
+  isFilterable?: boolean
+
+  /**
+   * Whether the input is currently disabled
+   */
   isDisabled?: boolean
-  backgroundColor?: string
+
+  /**
+   * Whether the input has been "touched" (e.g. clicked or focused)
+   */
+  isTouched?: boolean
+
+  /**
+   * The border radius of the input element
+   */
   rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
+
+  /**
+   * The label of the input
+   */
+  label?: string
 }
 
 const {
   modelValue,
   errors,
   isDisabled = false,
+  isFilterable = false,
+  isTouched = false,
   rounded = 'rounded-md',
 } = defineProps<Props>()
 
-const selectedValue = useVModel(computed(() => modelValue))
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: any): void
+  (event: 'update:filter', value: string): void
+  (event: 'blur'): void
+  (event: 'scroll:bottom'): void
+}>()
 
-const isTouched = ref(false)
-const isFocused = ref(false)
+const selectedValue = useVModel(computed<any>(() => modelValue))
 
+const isFocused = ref<boolean>(false)
+const hasBeenFocusedAtleastOnce = ref<boolean>(false)
+const optionsElement = ref<Nullable<InstanceType<typeof ListboxOptions | typeof ComboboxOptions>>>(
+  null,
+)
+
+const { t } = useI18n()
 const isKeyboardMode = useIsKeyboardMode()
 
-const hasError = computed(() => errors != null && errors._errors.length > 0 && isTouched.value)
+const hasError = computed<boolean>(() => errors != null && errors._errors.length > 0 && isTouched)
+const isMultiple = computed<boolean>(() => Array.isArray(modelValue))
+const hasValue = computed<boolean>(
+  () => isMultiple.value ? modelValue.length > 0 : modelValue != null,
+)
 
-const isMuliple = computed(() => Array.isArray(modelValue))
+provide('isMultiple', isMultiple.value)
+provide('isFilterable', isFilterable)
 
-provide('isMultiple', isMuliple.value)
+const inputClasses = 'bg-input relative flex h-10 items-center justify-between border border-solid p-2 text-left outline outline-2 outline-offset-2'
+const optionsClasses = 'relative bg-primary shadow-primary max-h-60 overflow-hidden overflow-y-auto rounded-md outline-none'
+
+const floatProps = {
+  'flip': true,
+  'adaptive-width': true,
+  'auto-update': {
+    animationFrame: true,
+  },
+  'enter': 'transition duration-150',
+  'enter-from': 'scale-y-[0.85] opacity-0',
+  'enter-to': 'scale-100 opacity-100',
+  'leave': 'transition duration-150',
+  'leave-from': 'scale-100 opacity-100',
+  'leave-to': 'scale-y-[0.95] opacity-0',
+  'tailwindcss-origin-class': true,
+}
 
 const computedIconColor = computed<string>(() => {
   if (hasError.value)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
-  return colors.value.text.tertiary
+  return colors['text-tertiary']
 })
 
 const computedColor = computed<string>(() => {
   if (isDisabled)
-    return colors.value.text.inputDisabled
+    return colors['text-input-disabled']
 
   if (hasError.value)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
-  return colors.value.text.input
+  return colors['text-input']
 })
 
 const computedBorderColor = (isOpen: boolean): string => {
   if (hasError.value)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
   if (isFocused.value || isOpen)
-    return colors.value.accent.primary
+    return colors['accent-primary']
 
-  return colors.value.border.input
+  return colors['border-input']
 }
 
 const computedBackgroundColor = computed<string>(() => {
   if (isDisabled === true)
-    return colors.value.background.inputDisabled
+    return colors['bg-input-disabled']
 
-  return colors.value.background.input
+  return colors['bg-input']
 })
+
+// const computedInnerShadow = computed<string>(() => {
+//   const shadows: string[] = []
+
+//   if (!isScrolledToTop.value)
+//     shadows.push('inset 0px 20px 20px -20px rgba(0, 0, 0, 0.1)')
+
+//   if (!isScrolledToBottom.value)
+//     shadows.push('inset 0px -20px 20px -20px rgba(0, 0, 0, 0.1)')
+
+//   return shadows.join(',')
+// })
 
 const computedOutlineColor = (isOpen: boolean): string => {
   if ((isFocused.value || isOpen) && isKeyboardMode.value)
@@ -83,72 +172,162 @@ const computedOutlineColor = (isOpen: boolean): string => {
 
 const handleFocus = (): void => {
   isFocused.value = true
+  hasBeenFocusedAtleastOnce.value = true
 }
 
 const handleBlur = (isOpen: boolean): void => {
   isFocused.value = false
 
   if (!isOpen)
-    isTouched.value = true
+    emit('blur')
 }
-</script>
 
-<script lang="ts">
-export default {
-  inheritAttrs: false,
+const handleScroll = (e: Event): void => {
+  const target = e.target as HTMLElement
+
+  const isScrolledToBottom = target.scrollHeight - target.scrollTop === target.clientHeight
+
+  if (isScrolledToBottom)
+    emit('scroll:bottom')
 }
+
+/**
+ * We do not have access to the `open` state in the script,
+ * so there is currently no way to determine if the select has lost focus.
+ */
+watch(() => optionsElement.value?.$el, (el) => {
+  if (el === null && hasBeenFocusedAtleastOnce.value && !isFocused.value)
+    emit('blur')
+}, { deep: true })
 </script>
 
 <template>
-  <Listbox
-    v-slot="{ open }"
-    v-model="selectedValue"
-    :multiple="isMuliple"
+  <FormLabel
+    :label="label"
+    :errors="errors"
+    :is-touched="isTouched"
+    class="block"
   >
-    <Float
-      :flip="true"
-      :adaptive-width="true"
-      enter="transition duration-150"
-      enter-from="scale-y-[0.85] opacity-0"
-      enter-to="scale-100 opacity-100"
-      leave="transition duration-150"
-      leave-from="scale-100 opacity-100"
-      leave-to="scale-y-[0.95] opacity-0"
-      tailwindcss-origin-class
+    <Combobox
+      v-if="isFilterable"
+      v-slot="{ open }"
+      v-model="selectedValue"
+      :multiple="isMultiple"
+      as="template"
     >
-      <ListboxButton
-        v-bind="$attrs"
-        :class="rounded"
+      <div
+        :class="[inputClasses, rounded]"
         :style="{
           backgroundColor: computedBackgroundColor,
-          color: computedColor,
           borderColor: computedBorderColor(open),
           outlineColor: computedOutlineColor(open),
         }"
-        class="bg-input flex h-10 items-center justify-between border border-solid p-2 text-left outline outline-2 outline-offset-2"
-        @focus="handleFocus"
-        @blur="handleBlur(open)"
+        class="duration-200"
       >
-        <span>
-          <slot
-            v-if="selectedValue != null"
-            name="value"
-            :value="selectedValue"
-          />
-        </span>
-
-        <AppIcon
-          :icon="ARROWS_CHEVRON_DOWN"
+        <ComboboxInput
+          :display-value="hasValue && !open ? displayValue : undefined"
+          :placeholder="hasValue && open ? displayValue(modelValue) : undefined"
+          :spellcheck="false"
           :style="{
-            color: computedIconColor,
+            color: computedColor,
           }"
-          class="h-3 w-3"
+          class="block w-full truncate bg-transparent pr-4 outline-none"
+          @change="emit('update:filter', $event.target.value)"
+          @focus="handleFocus"
+          @blur="handleBlur(open)"
         />
-      </ListboxButton>
 
-      <ListboxOptions class="bg-primary shadow-primary max-h-60 overflow-hidden overflow-y-auto rounded-md outline-none">
-        <slot />
-      </ListboxOptions>
-    </Float>
-  </Listbox>
+        <Float
+          v-bind="floatProps"
+          :offset="{
+            mainAxis: 1,
+          }"
+        >
+          <ComboboxButton
+            class="absolute left-0 top-0 flex h-full w-full items-center justify-end bg-transparent p-2"
+            @click.prevent
+          >
+            <AppIcon
+              :icon="ARROWS_CHEVRON_DOWN"
+              :style="{
+                color: computedIconColor,
+              }"
+              class="h-3 w-3"
+            />
+          </ComboboxButton>
+
+          <ComboboxOptions
+            ref="optionsElement"
+            :class="optionsClasses"
+            @scroll="handleScroll"
+          >
+            <slot>
+              <slot name="empty">
+                <AppText
+                  variant="body-1"
+                  class="py-3 px-5"
+                >
+                  {{ t('core.no_results_found') }}
+                </AppText>
+              </slot>
+            </slot>
+          </ComboboxOptions>
+        </Float>
+      </div>
+    </Combobox>
+
+    <Listbox
+      v-else
+      v-slot="{ open }"
+      v-model="selectedValue"
+      :multiple="isMultiple"
+      :show="true"
+    >
+      <Float v-bind="floatProps">
+        <ListboxButton
+          :class="[inputClasses, rounded]"
+          :style="{
+            backgroundColor: computedBackgroundColor,
+            color: computedColor,
+            borderColor: computedBorderColor(open),
+            outlineColor: computedOutlineColor(open),
+          }"
+          class="block w-full"
+          @focus="handleFocus"
+          @blur="handleBlur(open)"
+        >
+          <span class="truncate">
+            <template v-if="selectedValue != null">
+              {{ displayValue(selectedValue) }}
+            </template>
+          </span>
+
+          <AppIcon
+            :icon="ARROWS_CHEVRON_DOWN"
+            :style="{
+              color: computedIconColor,
+            }"
+            class="h-3 w-3 shrink-0"
+          />
+        </ListboxButton>
+
+        <ListboxOptions
+          ref="optionsElement"
+          :class="optionsClasses"
+          @scroll="handleScroll"
+        >
+          <slot>
+            <slot name="empty">
+              <AppText
+                variant="body-1"
+                class="py-3 px-5"
+              >
+                {{ t('core.no_results_found') }}
+              </AppText>
+            </slot>
+          </slot>
+        </ListboxOptions>
+      </Float>
+    </Listbox>
+  </FormLabel>
 </template>

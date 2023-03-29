@@ -1,72 +1,71 @@
 <script setup lang="ts">
-import type { Props as BaseProps } from './useAppButton'
+import type { BaseProps } from './useAppButton'
 import useAppButton from './useAppButton'
 
-import { useBorderRadius, useColor } from '@/composables/ui'
-import { colors } from '@/theme'
-
-import type { Rounded } from '@/models'
+import { useColor } from '@/composables/ui'
+import type { Color } from '@/theme'
+import { colors, getColor } from '@/theme'
 
 interface Props extends BaseProps {
   /**
-   * Button color
+   * The accent color of the button.
    */
-  accentColor?: string
+  accentColor?: Color | string
 
   /**
-   * Border color
+   * The border color of the button.
    */
-  borderColor?: string
+  borderColor?: Color | string
 
   /**
-   * Button styling
+   * The visual style of the button.
    */
   variant?: 'solid' | 'outline' | 'ghost' | 'unstyled'
 
   /**
-   * Show icon on the left side
+   * The name of the icon to show on the left side of the button.
    */
   iconLeft?: string
 
   /**
-   * Show icon on the right side
+   * The name of the icon to show on the right side of the button.
    */
   iconRight?: string
 
   /**
-   * The size of the icons
+   * The size of the button icons.
    */
   iconSize?: string
 
   /**
-   * The space between the button icon and label
+   * The space between the button icon and label.
    */
   iconSpacing?: string
 
   /**
-   * Button padding values
-   * Defaults to `1em 1.2em`. Or `1em` when no slot content is passed
+   * The padding values for the button.
+   * Defaults to '1em 1.2em' or '1em' when no slot content is passed.
    */
   padding?: string
 
   /**
-   * Border radius
+   * The border radius of the button.
+   * Defaults to 'rounded-md'.
    */
-  rounded?: Rounded
+  rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  accentColor: undefined,
-  borderColor: undefined,
-  variant: 'solid',
-  iconLeft: undefined,
-  iconRight: undefined,
-  iconSize: '0.875em',
-  iconSpacing: '0.8em',
-
-  padding: undefined,
-  rounded: 'default',
-})
+const {
+  accentColor,
+  borderColor,
+  variant = 'solid',
+  iconLeft,
+  iconRight,
+  iconSize = '0.975em',
+  iconSpacing = '0.em',
+  padding = '1em 1.2em',
+  rounded = 'rounded-md',
+} = defineProps<Props>()
 
 const attrs = useAttrs()
 const slots = useSlots()
@@ -75,20 +74,10 @@ const { button, state } = useAppButton()
 const { isDarkColor } = useColor()
 
 const computedAccentColor = computed<string>(
-  () => props.accentColor ?? colors.value.accent.primary,
+  () => accentColor == null ? colors['accent-primary'] : getColor(accentColor),
 )
 
-const textColor = computed<string>(
-  () => (
-    isDarkColor(computedAccentColor.value)
-      ? '#ffffff'
-      : '#000000'
-  ),
-)
-
-const backgroundColor = computed<string>(() => {
-  const { variant } = props
-
+const computedBackgroundColor = computed<string>(() => {
   if ([
 
     'outline',
@@ -100,9 +89,15 @@ const backgroundColor = computed<string>(() => {
   return computedAccentColor.value
 })
 
-const color = computed<string>(() => {
-  const { variant } = props
+const computedTextColor = computed<string>(
+  () => (
+    isDarkColor(computedBackgroundColor.value) && computedBackgroundColor.value !== 'transparent'
+      ? 'white'
+      : 'black'
+  ),
+)
 
+const computedColor = computed<string>(() => {
   if ([
     'ghost',
     'outline',
@@ -110,16 +105,14 @@ const color = computed<string>(() => {
     return computedAccentColor.value
 
   if (variant === 'unstyled')
-    return colors.value.text.secondary
+    return colors['text-secondary'] as Color
 
-  return textColor.value
+  return computedTextColor.value
 })
 
-const borderColor = computed<string>(() => {
-  const { variant } = props
-
-  if (props.borderColor != null)
-    return props.borderColor
+const computedBorderColor = computed<string>(() => {
+  if (borderColor != null)
+    return borderColor
 
   if ([
     'solid',
@@ -127,21 +120,17 @@ const borderColor = computed<string>(() => {
   ].includes(variant))
     return computedAccentColor.value
 
-  return 'transparent'
+  return 'transparent' as Color
 })
 
-const outlineColor = computed<string>(() => {
-  const { variant } = props
-
+const computedOutlineColor = computed<string>(() => {
   if (['unstyled', 'ghost'].includes(variant))
-    return color.value
+    return computedColor.value
 
-  return borderColor.value
+  return computedBorderColor.value
 })
 
 const computedPadding = computed<string>(() => {
-  const { padding, variant } = props
-
   if (padding !== undefined)
     return padding
 
@@ -167,14 +156,14 @@ const hasExplicitWidth = computed<boolean>(
         'opacity-50': state.isDisabled,
         'opacity-75': state.isLoading,
       },
+      rounded,
     ]"
     :style="{
-      backgroundColor,
-      borderColor,
-      color,
-      outlineColor,
+      backgroundColor: computedBackgroundColor,
+      borderColor: computedBorderColor,
+      color: computedTextColor,
+      outlineColor: computedOutlineColor,
       padding: computedPadding,
-      borderRadius: useBorderRadius(),
     }"
     class="relative border border-solid text-sm outline-offset-[4px] duration-200"
   >
@@ -183,7 +172,7 @@ const hasExplicitWidth = computed<boolean>(
       class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
     >
       <AppLoader
-        :accent-color="color"
+        :accent-color="computedColor"
         class="text-[1em]"
       />
     </div>
@@ -205,7 +194,7 @@ const hasExplicitWidth = computed<boolean>(
             class="relative"
           >
             <AppLoader
-              :accent-color="color"
+              :accent-color="computedAccentColor"
               class="!absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[0.9em]"
             />
           </div>
@@ -213,9 +202,10 @@ const hasExplicitWidth = computed<boolean>(
           <div v-else-if="iconLeft">
             <AppIcon
               :icon="iconLeft"
-              :secondary-color="backgroundColor"
+              :secondary-color="computedBackgroundColor"
               :style="{
                 width: iconSize,
+                color: computedAccentColor,
                 marginRight: !!$slots.default ? iconSpacing : undefined,
               }"
             />
@@ -230,9 +220,10 @@ const hasExplicitWidth = computed<boolean>(
       <AppIcon
         v-if="iconRight"
         :icon="iconRight"
-        :secondary-color="backgroundColor"
+        :secondary-color="computedBackgroundColor"
         :style="{
           width: iconSize,
+          color: computedAccentColor,
           marginLeft: !!$slots.default ? iconSpacing : undefined,
         }"
       />
@@ -272,3 +263,4 @@ const hasExplicitWidth = computed<boolean>(
   }
 }
 </style>
+

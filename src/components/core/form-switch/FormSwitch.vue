@@ -4,7 +4,7 @@ import useFormCheckbox from '../form-checkbox/useFormCheckbox'
 
 import { useComponentAttrs } from '@/composables/ui'
 
-import { colors } from '@/theme'
+import { colors, getColor } from '@/theme'
 
 interface Props extends BaseProps {
   accentColor?: string
@@ -26,7 +26,7 @@ const {
 } = useComponentAttrs()
 
 const switchEl = ref<HTMLElement | null>(null)
-const switchWidth = ref(0)
+const switchWidth = ref<number>(0)
 const padding = '1px'
 
 let transition: string | null = null
@@ -41,9 +41,11 @@ onMounted(async () => {
   transition = '0.3s cubic-bezier(0.22, 0.68, 0, 1.1)'
 })
 
-const computedAccentColor = computed<string>(() => (
-  props.accentColor ?? colors.value.accent.primary
-))
+const computedAccentColor = computed<string>(
+  () => props.accentColor == null
+    ? colors['accent-primary']
+    : getColor(props.accentColor),
+)
 
 const thumbStyle = computed<{
   transition: string | undefined
@@ -84,7 +86,7 @@ export default {
         padding,
         backgroundColor: state.isChecked
           ? computedAccentColor
-          : colors.background.switch,
+          : colors['bg-switch'],
         outlineColor: computedAccentColor,
       }"
       class="box-content

@@ -11,7 +11,7 @@ const {
   as,
 } = defineProps<Props>()
 
-const classes = computed(() => {
+const classes = computed<string>(() => {
   const classes: string[] = []
 
   if (truncate === true)
@@ -50,7 +50,7 @@ const classes = computed(() => {
   return classes.join(' ')
 })
 
-const component = computed(() => {
+const component = computed<string>(() => {
   if (as !== undefined)
     return as
 
@@ -66,7 +66,7 @@ const component = computed(() => {
   }
 })
 
-const styles = computed(() => {
+const styles = computed<Record<string, string>>(() => {
   const styles: Record<string, string> = {}
 
   if (typeof truncate === 'number') {

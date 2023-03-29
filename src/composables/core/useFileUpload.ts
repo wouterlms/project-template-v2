@@ -10,8 +10,8 @@ interface UseFileUpload {
 }
 
 export default (): UseFileUpload => {
-  const progress = ref(0)
-  const isUploadingFile = ref(false)
+  const progress = ref<number>(0)
+  const isUploadingFile = ref<boolean>(false)
 
   const uploadFile = async (file: File): Promise<string> => {
     const { name, type } = file

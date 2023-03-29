@@ -14,7 +14,7 @@ export default <O, T extends Record<any, any>>(defaultProps: O, props: T): Compu
     return o as T
   }
 
-  const propsWithDefaults = computed(() => ({
+  const propsWithDefaults = computed<O & T>(() => ({
     ...defaultProps,
     ...camelizeObject<T>(props),
   }))

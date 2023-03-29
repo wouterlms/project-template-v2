@@ -5,7 +5,7 @@ interface Props {
   isActive: boolean
 }
 
-withDefaults(defineProps<Props>(), {})
+const { isActive } = defineProps<Props>()
 </script>
 
 <template>

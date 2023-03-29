@@ -4,11 +4,12 @@ import useFormRadio from './useFormRadio'
 
 import { useComponentAttrs } from '@/composables/ui'
 
-import { colors } from '@/theme'
+import type { Color } from '@/theme'
+import { colors, getColor } from '@/theme'
 
 interface Props extends BaseProps {
   hasError?: boolean
-  accentColor?: string
+  accentColor?: Color | string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,25 +27,27 @@ const {
   stylingAttrs,
 } = useComponentAttrs()
 
-const computedAccentColor = computed<string>(() => (
-  props.accentColor ?? colors.value.accent.primary
-))
+const computedAccentColor = computed<string>(
+  () => props.accentColor == null
+    ? colors['accent-primary']
+    : getColor(props.accentColor),
+)
 
 const borderColor = computed<string>(() => {
   const { isChecked, isFocused } = state.value
 
   if (props.hasError)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
   if (isChecked || isFocused)
     return computedAccentColor.value
 
-  return colors.value.border.input
+  return colors['border-input']
 })
 
 const dotColor = computed<string>(() => {
   if (props.hasError)
-    return colors.value.accent.danger[500]
+    return colors['accent-danger']
 
   return computedAccentColor.value
 })
@@ -105,7 +108,7 @@ export default {
     <span
       v-if="slots.default"
       :class="[
-        hasError ? 'text-error' : 'text-secondary',
+        hasError ? 'text-accent-danger' : 'text-secondary',
         {
           'opacity-50': state.isDisabled,
         },

@@ -5,9 +5,9 @@ interface Props {
   as?: string
 }
 
-withDefaults(defineProps<Props>(), {
-  as: 'div',
-})
+const {
+  as = 'div',
+} = defineProps<Props>()
 
 const grid = inject('grid') as ComputedRef<string>
 </script>

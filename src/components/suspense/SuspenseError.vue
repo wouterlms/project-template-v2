@@ -21,7 +21,7 @@ console.error(message)
 
 <template>
   <div class="flex items-center p-4 text-sm">
-    <div class="border-primary text-tertiary/75 border-r border-solid px-4 tracking-wider">
+    <div class="text-tertiary/75 border-r border-solid border-neutral-100 px-4 tracking-wider">
       {{ status }}
     </div>
 

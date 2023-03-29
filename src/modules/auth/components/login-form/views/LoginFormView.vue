@@ -3,7 +3,7 @@ import { useForm } from '@appwise/forms'
 
 import { useLoginFormService, useLoginFormUtils } from '../composables'
 
-import { useForgotPasswordStore, useLoginStore } from '@/stores'
+import { useForgotPasswordStore, useLoginStore } from '../../../stores'
 import { loginForm } from '@/models'
 
 import { Route } from '@/enums'
@@ -27,7 +27,9 @@ const { submitForm } = useLoginFormService({
 })
 
 const form = useForm(loginForm, {
-  onSubmit: submitForm,
+  onSubmit: (values) => {
+    submitForm(values)
+  },
 })
 
 const { title } = useLoginFormUtils()

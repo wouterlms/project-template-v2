@@ -3,9 +3,9 @@ interface Props {
   grid: string
 }
 
-const props = withDefaults(defineProps<Props>(), {})
+const { grid } = defineProps<Props>()
 
-provide('grid', computed(() => props.grid))
+provide('grid', computed<string>(() => grid))
 </script>
 
 <template>

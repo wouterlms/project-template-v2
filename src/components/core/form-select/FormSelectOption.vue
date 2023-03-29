@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ListboxOption } from '@headlessui/vue'
+import { ComboboxOption, ListboxOption } from '@headlessui/vue'
 import { PRIVACY_AND_SECURITY_CHECKMARK } from '@wouterlms/icons'
 
 interface Props {
@@ -9,13 +9,16 @@ interface Props {
 const { isDisabled } = defineProps<Props>()
 
 const isMultiple = inject('isMultiple', false)
+const isFilterable = inject('isFilterable', false)
 </script>
 
 <template>
-  <ListboxOption
+  <Component
+    :is="isFilterable ? ComboboxOption : ListboxOption"
     v-slot="{ selected, active, disabled }"
     :disabled="isDisabled"
     as="template"
+    @click.prevent
   >
     <li
       :class="[
@@ -23,7 +26,7 @@ const isMultiple = inject('isMultiple', false)
           'text-accent-primary': selected,
           'bg-accent-primary/10': selected && !active,
           'bg-accent-primary/20': selected && active,
-          'bg-neutral-100': active,
+          'bg-neutral-100 dark:bg-neutral-200': active && !selected,
         },
         disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
       ]"
@@ -45,5 +48,5 @@ const isMultiple = inject('isMultiple', false)
 
       <slot />
     </li>
-  </ListboxOption>
+  </Component>
 </template>

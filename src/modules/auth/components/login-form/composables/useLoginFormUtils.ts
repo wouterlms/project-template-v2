@@ -1,4 +1,4 @@
-import { useLoginStore } from '@/stores'
+import { useLoginStore } from '../../../stores'
 
 type UseLoginFormUtils = () => {
   title: string

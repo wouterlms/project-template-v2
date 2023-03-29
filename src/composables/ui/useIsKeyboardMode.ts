@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { ref } from 'vue'
 
-const isKeyboardMode = ref(false)
+const isKeyboardMode = ref<boolean>(false)
 
 window.addEventListener('keydown', (e) => {
   if (e.code === 'Tab')

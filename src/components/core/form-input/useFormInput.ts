@@ -1,3 +1,4 @@
+import type { VNode } from 'vue'
 import { usePropsWithDefaults } from '@/composables/ui'
 
 enum ComponentType {
@@ -65,7 +66,7 @@ export default () => {
   const instance = getCurrentInstance()
 
   // const value = useVModel(toRef(props.value, 'modelValue'))
-  const value = computed({
+  const value = computed<Nullable<string | number>>({
     get: () => props.value.modelValue,
     set: (value) => {
       const { type } = props.value
@@ -86,17 +87,17 @@ export default () => {
     },
   })
 
-  const isPasswordVisible = ref(false)
-  const isFocused = ref(false)
+  const isPasswordVisible = ref<boolean>(false)
+  const isFocused = ref<boolean>(false)
 
-  const component = computed(() => {
+  const component = computed<ComponentType>(() => {
     if (props.value.type === ComponentType.TEXTAREA)
       return ComponentType.TEXTAREA
 
     return ComponentType.INPUT
   })
 
-  const inputType = computed(() => {
+  const inputType = computed<string>(() => {
     if (props.value.type === 'password')
       return isPasswordVisible.value ? 'text' : 'password'
 
@@ -111,7 +112,7 @@ export default () => {
     value.value = null
   }
 
-  const input = computed(() => {
+  const input = computed<VNode>(() => {
     const {
       autofocus,
       type,
@@ -161,7 +162,14 @@ export default () => {
     input,
     togglePassword,
     clearInputValue,
-    state: computed(() => ({
+    state: computed<{
+      isPasswordVisible: boolean
+      isFocused: boolean
+      isDisabled: boolean
+      isLoading: boolean
+      isReadonly: boolean
+      type: string
+    }>(() => ({
       isPasswordVisible: isPasswordVisible.value,
       isFocused: isFocused.value,
       isDisabled: props.value.isDisabled,

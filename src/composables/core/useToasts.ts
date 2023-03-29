@@ -6,7 +6,7 @@ interface Toast {
 }
 
 const toasts = ref<Toast[]>([])
-const toast = computed(() => toasts.value[0] ?? null)
+const toast = computed<Nullable<Toast>>(() => toasts.value[0] ?? null)
 
 let timeout: ReturnType<typeof setTimeout> | null = null
 

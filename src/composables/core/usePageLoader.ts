@@ -9,8 +9,8 @@ type UsePageLoader = () => {
 const usePageLoader: UsePageLoader = () => {
   const router = useRouter()
 
-  const showProgressBar = ref(false)
-  const progress = ref(0)
+  const showProgressBar = ref<boolean>(false)
+  const progress = ref<number>(0)
 
   // Timeout is used to not show a loader when a page has already been loaded
   let startLoadingTimeout: ReturnType<typeof setTimeout> | null = null

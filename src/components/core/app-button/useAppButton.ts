@@ -1,48 +1,54 @@
-import type { VNode } from 'vue'
-
-import type { RouteLocationRaw } from 'vue-router'
 import { RouterLink } from 'vue-router'
+import type { ComputedRef, VNode } from 'vue'
+import type { RouteLocationRaw } from 'vue-router'
 
 import { usePropsWithDefaults } from '@/composables/ui'
 
-export interface Props {
+export interface BaseProps {
   /**
-   * Renders a `<RouterLink>`
+   * The route when the button is clicked. Renders a `<RouterLink>` element.
    */
   to?: RouteLocationRaw
 
   /**
-   * Renders a `<a>`
+   * The URL to navigate to when the button is clicked. Renders an `<a>` element.
    */
   href?: string
 
   /**
-   * Native button type, defaults to `button`
+   * The type of the native button element. Defaults to 'button'.
    */
   type?: string
 
   /**
-   * Disable button
+   * Whether the button is disabled or not.
    */
   isDisabled?: boolean
 
   /**
-   * Show loader and disable button
+   * Whether to show a loading indicator and disable the button.
    */
   isLoading?: boolean
 }
 
-const defaultProps = {
-  type: 'button',
-  isDisabled: false,
-  isLoading: false,
-  to: undefined,
-  href: undefined,
+type UseAppButton = () => {
+  button: ComputedRef<VNode>
+  state: {
+    isLoading: boolean
+    isDisabled: boolean
+  }
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default () => {
-  const props = usePropsWithDefaults(defaultProps, useAttrs() as Props)
+const useAppButton: UseAppButton = () => {
+  const defaultProps = {
+    type: 'button',
+    isDisabled: false,
+    isLoading: false,
+    to: undefined,
+    href: undefined,
+  }
+
+  const props = usePropsWithDefaults(defaultProps, useAttrs() as BaseProps)
 
   const component = computed<typeof RouterLink | string>(() => {
     if (props.value.to !== undefined)
@@ -54,13 +60,13 @@ export default () => {
     return 'button'
   })
 
-  const button = computed(() => {
+  const button = computed<VNode>(() => {
     const {
       isLoading,
       isDisabled,
-      type,
       to,
       href,
+      type,
     } = props.value
 
     const buttonProps: Record<string, unknown> = {
@@ -83,9 +89,14 @@ export default () => {
 
   return {
     button,
-    state: computed(() => ({
-      isLoading: props.value.isLoading,
-      isDisabled: props.value.isDisabled,
-    })),
+    state: reactive<{
+      isLoading: boolean
+      isDisabled: boolean
+    }>({
+      isLoading: computed<boolean>(() => props.value.isLoading) as unknown as boolean,
+      isDisabled: computed<boolean>(() => props.value.isDisabled) as unknown as boolean,
+    }),
   }
 }
+
+export default useAppButton

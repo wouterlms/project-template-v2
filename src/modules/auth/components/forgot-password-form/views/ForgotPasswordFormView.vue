@@ -3,7 +3,7 @@ import { useForm } from '@appwise/forms'
 
 import { useForgotPasswordFormService } from '../composables'
 
-import { useForgotPasswordStore } from '@/stores'
+import { useForgotPasswordStore } from '../../../stores'
 import { forgotPasswordForm } from '@/models'
 
 import { Route } from '@/enums'
@@ -12,6 +12,10 @@ const { t } = useI18n()
 
 const forgotPasswordStore = useForgotPasswordStore()
 
+const { lastLoginAttemptEmail } = forgotPasswordStore
+
+const hasSentEmail = computed<boolean>(() => forgotPasswordStore.hasSentEmail)
+
 const { submitForm } = useForgotPasswordFormService({
   onSuccess: () => {
     forgotPasswordStore.setHasSentEmail(true)
@@ -19,14 +23,16 @@ const { submitForm } = useForgotPasswordFormService({
 })
 
 const form = useForm(forgotPasswordForm, {
-  onSubmit: submitForm,
+  onSubmit: (values) => {
+    submitForm(values)
+  },
 })
+
+const email = form.register('email', lastLoginAttemptEmail ?? undefined)
 
 onBeforeUnmount(() => {
   forgotPasswordStore.setHasSentEmail(false)
 })
-
-const hasSentEmail = computed(() => forgotPasswordStore.hasSentEmail)
 </script>
 
 <template>
@@ -51,13 +57,14 @@ const hasSentEmail = computed(() => forgotPasswordStore.hasSentEmail)
       :form="form"
     >
       <FormInput
-        v-bind=" form.register('email')"
+        v-bind="email"
         :label="t('common.email')"
         type="email"
       />
 
       <FormButton
         :form="form"
+        :disable-if-not-dirty="false"
         padding="1.2em"
         class="mt-6 w-full"
       >

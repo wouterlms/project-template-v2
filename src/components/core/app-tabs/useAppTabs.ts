@@ -22,7 +22,7 @@ export default () => {
 
   const tabs = ref<unknown[]>([])
   const tabDimensions = ref<TabDimensions[]>([])
-  const transitionDuration = ref(0)
+  const transitionDuration = ref<number>(0)
 
   let mutationObserver: MutationObserver | null = null
 
@@ -119,7 +119,7 @@ export default () => {
 
   return {
     tabs: tabsComponent,
-    state: computed(() => ({
+    state: computed<{ style: StyleValue }>(() => ({
       style: style.value,
     })),
   }

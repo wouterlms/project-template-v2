@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios'
 
+import type { z } from 'zod'
 import { useAuth } from '@/composables'
 
 import type { LoginForm, Profile } from '@/models'
@@ -10,7 +11,7 @@ type UseLoginFormService = (
     onError: (email: string) => void
   }
 ) => {
-  submitForm: (data: LoginForm) => Promise<any>
+  submitForm: (data: LoginForm) => Promise<Nullable<z.ZodFormattedError<LoginForm>>>
 }
 
 const useLoginForm: UseLoginFormService = ({ onSuccess, onError }) => {

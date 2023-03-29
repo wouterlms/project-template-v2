@@ -1,12 +1,14 @@
+import type { z } from 'zod'
+
+import { authService } from '../../../services'
 import { transformApiErrors } from '@/utils'
-import { authService } from '@/services'
 
 import type { ResetPasswordForm } from '@/models'
 
 type UseResetPasswordFormService = (
   { onSuccess }: { onSuccess: (email: string, password: string) => void | Promise<void> }
 ) => {
-  submitForm: (data: ResetPasswordForm) => Promise<any>
+  submitForm: (data: ResetPasswordForm) => Promise<Nullable<z.ZodFormattedError<ResetPasswordForm>>>
 }
 
 const useResetPasswordForm: UseResetPasswordFormService = ({ onSuccess }) => {
