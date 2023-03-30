@@ -27,9 +27,7 @@ const { submitForm } = useLoginFormService({
 })
 
 const form = useForm(loginForm, {
-  onSubmit: (values) => {
-    submitForm(values)
-  },
+  onSubmit: submitForm,
 })
 
 const { title } = useLoginFormUtils()

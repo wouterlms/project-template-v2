@@ -23,9 +23,7 @@ const { submitForm } = useForgotPasswordFormService({
 })
 
 const form = useForm(forgotPasswordForm, {
-  onSubmit: (values) => {
-    submitForm(values)
-  },
+  onSubmit: submitForm,
 })
 
 const email = form.register('email', lastLoginAttemptEmail ?? undefined)

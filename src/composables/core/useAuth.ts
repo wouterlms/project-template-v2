@@ -58,7 +58,7 @@ export default (): Omit<UseAuth<Profile>, 'user'> => {
 
       authStore.setUser(parsedUser)
 
-      return user
+      return parsedUser
     }
     catch (e) {
       console.error(e)

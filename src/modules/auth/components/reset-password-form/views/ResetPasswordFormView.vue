@@ -47,9 +47,7 @@ const { submitForm } = useResetPasswordFormService({
 })
 
 const form = useForm(resetPasswordForm, {
-  onSubmit: (values) => {
-    submitForm(values)
-  },
+  onSubmit: submitForm,
 })
 
 if (token == null || email == null)

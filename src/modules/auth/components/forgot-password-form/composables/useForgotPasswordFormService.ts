@@ -2,6 +2,7 @@ import type { z } from 'zod'
 import { authService } from '../../../services'
 import { transformApiErrors } from '@/utils'
 
+import { mapForgotPasswordFormToDto } from '@/models'
 import type { ForgotPasswordForm } from '@/models'
 
 type UseForgotPasswordFormService = (
@@ -9,20 +10,22 @@ type UseForgotPasswordFormService = (
 ) => {
   submitForm: (
     data: ForgotPasswordForm
-  ) => Promise<Nullable<z.ZodFormattedError<ForgotPasswordForm>>>
+  ) => Promise<Omit<z.ZodFormattedError<ForgotPasswordForm>, '_errors'>>
 }
 
 const useForgotPasswordForm: UseForgotPasswordFormService = ({ onSuccess }) => {
-  const submitForm = async (data: ForgotPasswordForm): Promise<any> => {
+  const submitForm: ReturnType<UseForgotPasswordFormService>['submitForm'] = async (
+    data: ForgotPasswordForm,
+  ) => {
     try {
-      await authService.forgotPassword(data)
+      await authService.forgotPassword(mapForgotPasswordFormToDto(data))
       await onSuccess()
     }
     catch (err) {
       return transformApiErrors(err)
     }
 
-    return null
+    return {}
   }
 
   return {

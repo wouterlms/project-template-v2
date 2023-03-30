@@ -92,8 +92,8 @@ const computedBackgroundColor = computed<string>(() => {
 const computedTextColor = computed<string>(
   () => (
     isDarkColor(computedBackgroundColor.value) && computedBackgroundColor.value !== 'transparent'
-      ? 'white'
-      : 'black'
+      ? 'rgb(255, 255, 255)'
+      : 'rgb(0, 0, 0)'
   ),
 )
 
@@ -161,7 +161,7 @@ const hasExplicitWidth = computed<boolean>(
     :style="{
       backgroundColor: computedBackgroundColor,
       borderColor: computedBorderColor,
-      color: computedTextColor,
+      color: computedColor,
       outlineColor: computedOutlineColor,
       padding: computedPadding,
     }"
@@ -181,7 +181,7 @@ const hasExplicitWidth = computed<boolean>(
       :class="{
         'opacity-0': state.isLoading && !hasExplicitWidth,
       }"
-      class="relative flex items-center justify-center"
+      class="relative flex items-center justify-center gap-x-2"
     >
       <div class="relative">
         <Transition :name="!!iconLeft ? 'loader-with-icon-left' : 'loader'">
@@ -189,12 +189,13 @@ const hasExplicitWidth = computed<boolean>(
             v-if="state.isLoading && hasExplicitWidth"
             :style="{
               width: iconSize,
+              height: iconSize,
               marginRight: !!$slots.default ? iconSpacing : undefined,
             }"
             class="relative"
           >
             <AppLoader
-              :accent-color="computedAccentColor"
+              :accent-color="computedColor"
               class="!absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[0.9em]"
             />
           </div>
@@ -205,7 +206,7 @@ const hasExplicitWidth = computed<boolean>(
               :secondary-color="computedBackgroundColor"
               :style="{
                 width: iconSize,
-                color: computedAccentColor,
+                color: computedColor,
                 marginRight: !!$slots.default ? iconSpacing : undefined,
               }"
             />
@@ -223,7 +224,7 @@ const hasExplicitWidth = computed<boolean>(
         :secondary-color="computedBackgroundColor"
         :style="{
           width: iconSize,
-          color: computedAccentColor,
+          color: computedColor,
           marginLeft: !!$slots.default ? iconSpacing : undefined,
         }"
       />
@@ -253,7 +254,7 @@ const hasExplicitWidth = computed<boolean>(
   }
 
   &-leave-active {
-    position: absolute;
+    position: absolute !important;
     left: 0;
   }
 

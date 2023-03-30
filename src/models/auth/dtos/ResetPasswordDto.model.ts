@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { ResetPasswordForm } from '../forms'
 
 export const resetPasswordDto = z.object({
   token: z.string(),
@@ -8,3 +9,8 @@ export const resetPasswordDto = z.object({
 })
 
 export type ResetPasswordDto = z.infer<typeof resetPasswordDto>
+
+export const mapResetPasswordFormToDto = (data: ResetPasswordForm): ResetPasswordDto => ({
+  ...data,
+  passwordConfirmation: data.password,
+})

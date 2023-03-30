@@ -11,14 +11,16 @@ type UseLoginFormService = (
     onError: (email: string) => void
   }
 ) => {
-  submitForm: (data: LoginForm) => Promise<Nullable<z.ZodFormattedError<LoginForm>>>
+  submitForm: (data: LoginForm) => Promise<Omit<z.ZodFormattedError<LoginForm>, '_errors'>>
 }
 
 const useLoginForm: UseLoginFormService = ({ onSuccess, onError }) => {
   const { t } = useI18n()
   const auth = useAuth()
 
-  const submitForm = async ({ email, password }: LoginForm): Promise<any> => {
+  const submitForm: ReturnType<UseLoginFormService>['submitForm'] = async (
+    { email, password }: LoginForm,
+  ) => {
     try {
       await auth.signIn(email, password)
       const user = await auth.getUser()
@@ -45,7 +47,7 @@ const useLoginForm: UseLoginFormService = ({ onSuccess, onError }) => {
       else { throw err }
     }
 
-    return null
+    return {}
   }
 
   return {
