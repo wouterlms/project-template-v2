@@ -4,14 +4,12 @@ import type { Props as BaseProps } from './useFormInput'
 import useFormInput from './useFormInput'
 
 import {
-  useBorderRadius,
   useComponentAttrs,
   useIsKeyboardMode,
 } from '@/composables/ui'
 
 import { icons } from '@/icons'
 import { colors } from '@/theme'
-import type { Rounded } from '@/models'
 
 interface Props extends BaseProps {
   /**
@@ -50,9 +48,10 @@ interface Props extends BaseProps {
   padding?: string
 
   /**
-   * Border radius
+   * The border radius of the button.
+   * Defaults to 'rounded-md'.
    */
-  rounded?: Rounded
+  rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
 
   isTouched?: boolean
   label?: string
@@ -68,8 +67,7 @@ const {
   padding = '0.6em',
   isTouched = false,
   label,
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  rounded = 'default',
+  rounded = 'rounded-md',
 } = defineProps<Props>()
 
 const {
@@ -143,9 +141,9 @@ export default {
   >
     <label
       v-bind="stylingAttrs"
-      :class="{
+      :class="[rounded, {
         'opacity-50': state.isDisabled,
-      }"
+      }]"
       :style="{
         borderColor: computedBorderColor,
         color,
@@ -153,7 +151,6 @@ export default {
         outlineColor: state.isFocused && isKeyboardMode
           ? computedBorderColor
           : 'transparent',
-        borderRadius: useBorderRadius(),
       }"
       class="flex items-center border border-solid outline outline-2 outline-offset-2 duration-200"
     >

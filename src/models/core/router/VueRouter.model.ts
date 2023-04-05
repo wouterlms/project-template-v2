@@ -1,6 +1,6 @@
 import type { StoreDefinition } from 'pinia'
 
-import type { RouteMiddleware } from './RouteMiddleware.model'
+import type { RouteMiddleware } from './routeMiddleware.model'
 
 export { }
 

@@ -1,3 +1,3 @@
-export * from './ForgotPasswordForm.model'
-export * from './LoginForm.model'
-export * from './ResetPasswordForm.model'
+export * from './forgotPasswordForm.model'
+export * from './loginForm.model'
+export * from './resetPasswordForm.model'

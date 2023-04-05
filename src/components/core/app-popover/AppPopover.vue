@@ -3,7 +3,8 @@ import { useEventListener, useVModel } from '@wouterlms/composables'
 
 import type { Placement } from '@floating-ui/dom'
 
-import { useBorderRadius, useFloatingUI } from '@/composables/ui'
+import type { Ref, WritableComputedRef } from 'vue'
+import { useFloatingUI } from '@/composables/ui'
 
 import { clickOutside as vClickOutside } from '@/directives'
 
@@ -28,7 +29,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  show: false,
+  show: undefined,
   position: 'bottom',
   margin: 0,
   offset: 0,
@@ -40,9 +41,9 @@ const props = withDefaults(defineProps<Props>(), {
   rounded: 'rounded',
 })
 
-const isPopoverVisible = props.show == null
+const isPopoverVisible: Ref<boolean> | WritableComputedRef<boolean> = props.show == null
   ? ref<boolean>(false)
-  : useVModel(toRef(props, 'show'), 'show')
+  : useVModel(toRef(props, 'show'), 'show') as WritableComputedRef<boolean>
 
 const previouslyFocusedElement = ref<HTMLElement | null>(null)
 
@@ -158,9 +159,9 @@ useEventListener(document, 'focusin', () => {
         />
 
         <div
+          :class="[rounded]"
           :style="{
             backgroundColor: computedBackgroundColor,
-            borderRadius: useBorderRadius(),
           }"
           class="relative left-0 top-0 z-[1] h-full w-full overflow-hidden"
         >

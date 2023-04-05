@@ -17,7 +17,7 @@
     "story:preview": "histoire preview"
   },
   "dependencies": {
-    "@appwise/forms": "^0.0.10",
+    "@appwise/forms": "file:/Users/wouter/Documents/projects/forms/appwise-forms-0.0.11.tgz",
     "@appwise/vue-oauth2": "^1.0.0",
     "@floating-ui/dom": "^1.0.12",
     "@fontsource/dm-sans": "^4.5.9",
@@ -27,10 +27,8 @@
     "@sentry/vue": "^7.17.4",
     "@vue/runtime-core": "^3.2.39",
     "@wouterlms/composables": "^1.0.0",
-    "@wouterlms/forms": "^1.0.22",
     "axios": "^1.2.3",
     "axios-cache-adapter": "^2.7.3",
-    "eslint-plugin-require-explicit-generics": "^0.4.2",
     "focus-trap": "^7.2.0",
     "focus-trap-vue": "^4.0.1",
     "pinia": "^2.0.29",
@@ -40,7 +38,7 @@
     "zod": "^3.20.6"
   },
   "devDependencies": {
-    "@wisemen/vue-eslint-config": "file:/Users/wouter/Downloads/eslint-config-main/wisemen-vue-eslint-config-0.38.2.tgz",
+    "eslint-plugin-require-explicit-generics": "^0.4.2",
     "@antfu/eslint-config": "^0.27.0",
     "@histoire/plugin-vue": "^0.12.4",
     "@intlify/vite-plugin-vue-i18n": "^6.0.2",
@@ -67,7 +65,6 @@
     "putout": "^27.13.0",
     "sass": "^1.55.0",
     "tailwindcss": "^3.1.8",
-    "tailwindcss-theme-swapper": "^0.6.2",
     "tsc-files": "^1.1.3",
     "typescript": "5.0.2",
     "unplugin-auto-import": "^0.11.2",

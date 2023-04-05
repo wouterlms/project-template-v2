@@ -1,3 +1,3 @@
-export * from './LastLoggedInUser.model'
-export * from './LocalStorageValue.model'
+export * from './lastLoggedInUser.model'
+export * from './localStorageValue.model'
 //

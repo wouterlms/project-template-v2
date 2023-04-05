@@ -62,7 +62,7 @@ const {
   iconLeft,
   iconRight,
   iconSize = '0.975em',
-  iconSpacing = '0.em',
+  iconSpacing = '0.375em',
   padding = '1em 1.2em',
   rounded = 'rounded-md',
 } = defineProps<Props>()
@@ -181,7 +181,7 @@ const hasExplicitWidth = computed<boolean>(
       :class="{
         'opacity-0': state.isLoading && !hasExplicitWidth,
       }"
-      class="relative flex items-center justify-center gap-x-2"
+      class="relative flex items-center justify-center"
     >
       <div class="relative">
         <Transition :name="!!iconLeft ? 'loader-with-icon-left' : 'loader'">
@@ -206,7 +206,6 @@ const hasExplicitWidth = computed<boolean>(
               :secondary-color="computedBackgroundColor"
               :style="{
                 width: iconSize,
-                color: computedColor,
                 marginRight: !!$slots.default ? iconSpacing : undefined,
               }"
             />
@@ -224,7 +223,6 @@ const hasExplicitWidth = computed<boolean>(
         :secondary-color="computedBackgroundColor"
         :style="{
           width: iconSize,
-          color: computedColor,
           marginLeft: !!$slots.default ? iconSpacing : undefined,
         }"
       />

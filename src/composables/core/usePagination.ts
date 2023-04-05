@@ -3,8 +3,8 @@ import { http } from '@/plugins'
 
 const metaSchema = z.object({
   currentPage: z.number(),
-  from: z.number(),
-  to: z.number(),
+  from: z.number().nullable(),
+  to: z.number().nullable(),
   lastPage: z.number(),
   perPage: z.number(),
   total: z.number(),
@@ -21,7 +21,7 @@ const linksSchema = z.object({
 type Meta = z.infer<typeof metaSchema>
 type Links = z.infer<typeof linksSchema>
 
-export type UsePagination = <T extends z.ZodObject<any>>(
+export type UsePagination = <T extends z.ZodType>(
   url: string,
   schema: T,
   queryParams?: Record<string, Nullable<string | number>>
@@ -33,14 +33,14 @@ export type UsePagination = <T extends z.ZodObject<any>>(
   next: () => Promise<void>
 }
 
-const usePagination: UsePagination = <T extends z.ZodObject<any>>(
+const usePagination: UsePagination = <T extends z.ZodType>(
   url: string,
   schema: T,
   queryParams?: Record<string, Nullable<string | number>>,
 ) => {
   const urlWithQueryParams = computed<string>(() => {
     const filteredQueryParams = Object.fromEntries(
-      Object.entries(queryParams ?? {}).filter(([, value]) => value !== null),
+      Object.entries(queryParams ?? {}).filter(([, value]) => value !== null && value !== ''),
     ) as Record<string, string>
 
     const params = new URLSearchParams(filteredQueryParams)

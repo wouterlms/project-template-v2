@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     App: typeof import('./src/App.vue')['default']
+    'App copy': typeof import('./src/App copy.vue')['default']
     App2: typeof import('./src/App2.vue')['default']
     AppAvatar: typeof import('./src/components/elements/AppAvatar.vue')['default']
     AppBreadcrumbItem: typeof import('./src/components/elements/breadcrumbs/AppBreadcrumbItem.vue')['default']

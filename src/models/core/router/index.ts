@@ -1,1 +1,1 @@
-export * from './RouteMiddleware.model'
+export * from './routeMiddleware.model'

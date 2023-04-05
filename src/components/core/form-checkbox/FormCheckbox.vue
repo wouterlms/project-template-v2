@@ -5,7 +5,6 @@ import type { Props as BaseProps } from './useFormCheckbox'
 import useFormCheckbox from './useFormCheckbox'
 
 import {
-  useBorderRadius,
   useColor,
   useComponentAttrs,
 } from '@/composables/ui'
@@ -13,7 +12,6 @@ import {
 import { colors, getColor } from '@/theme'
 
 import type { Color } from '@/theme'
-import type { Rounded } from '@/models'
 
 interface Props extends BaseProps {
   hasError?: boolean
@@ -21,12 +19,16 @@ interface Props extends BaseProps {
   backgroundColor?: Color | string
   borderColor?: Color | string
 
-  rounded?: Rounded
+  /**
+   * The border radius of the button.
+   * Defaults to 'rounded-md'.
+   */
+  rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   hasError: false,
-  rounded: 'sm',
+  rounded: 'rounded',
   accentColor: undefined,
   backgroundColor: undefined,
   borderColor: undefined,
@@ -104,6 +106,7 @@ export default {
       }"
       :is="checkbox"
       :class="[
+        rounded,
         {
           'opacity-50': state.isDisabled,
         },
@@ -111,7 +114,6 @@ export default {
       :style="{
         backgroundColor: computedBackgroundColor,
         borderColor: computedBorderColor,
-        borderRadius: useBorderRadius(),
         outlineColor: computedBorderColor,
       }"
       class="flex

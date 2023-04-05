@@ -1,6 +1,6 @@
-import type { LastLoggedInUser } from './LastLoggedInUser.model'
+import type { LastLoggedInUser } from './lastLoggedInUser.model'
 import type { LocalStorageKey } from '@/enums'
 
 export interface LocalStorageValue {
-  [LocalStorageKey.LAST_LOGGED_IN_USER]: LastLoggedInUser
+  [LocalStorageKey.LAST_LOGGED_IN_USER]: Nullable<LastLoggedInUser>
 }

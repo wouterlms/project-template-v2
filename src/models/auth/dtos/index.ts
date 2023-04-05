@@ -1,2 +1,2 @@
-export * from './ForgotPasswordDto.model'
-export * from './ResetPasswordDto.model'
+export * from './forgotPasswordDto.model'
+export * from './resetPasswordDto.model'
