@@ -1,15 +1,23 @@
 import { defineStore } from 'pinia'
-import type { Profile } from '@/models'
+import type { AuthenticatedUser } from '@/models'
 
 export default defineStore('auth', () => {
-  const user = ref<Nullable<Profile>>(null)
+  const user = ref<Nullable<AuthenticatedUser>>(null)
 
-  const setUser = (value: Nullable<Profile>): void => {
+  const setUser = (value: Nullable<AuthenticatedUser>): void => {
     user.value = value
   }
 
+  const getAuthenticatedUser = (): AuthenticatedUser => {
+    if (user.value == null)
+      throw new Error('User is not authenticated')
+
+    return user.value
+  }
+
   return {
-    user: readonly(user),
+    user: computed<Nullable<AuthenticatedUser>>(() => user.value),
+    getAuthenticatedUser,
     setUser,
   }
 })

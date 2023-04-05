@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type { Ref } from 'vue'
 
-import { http } from '@/plugins'
+import { http } from '@/http'
 
 interface UseFileUpload {
   isUploadingFile: Ref<boolean>

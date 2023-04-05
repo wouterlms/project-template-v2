@@ -1,53 +1,39 @@
 <script setup lang="ts">
 import { useForm } from '@appwise/forms'
-import { useIsMobileDevice } from '@wouterlms/composables'
+import type { z } from 'zod'
 
-import { useResetPasswordFormService } from '../composables'
-import { useLoginStore } from '../../../stores'
+import { authService } from '../../../services'
+import { mapResetPasswordFormToDto } from '../utils'
 
-import { useAuth, useToasts } from '@/composables'
+import { useToasts } from '@/composables'
+import { transformApiErrors } from '@/utils'
 
 import { resetPasswordForm } from '@/models'
+import type { ResetPasswordForm } from '@/models'
 
 const { t } = useI18n()
 const { showToastMessage } = useToasts()
 const route = useRoute()
-const router = useRouter()
-const auth = useAuth()
 
 const { token } = route.params
 const { email } = route.query
 
-const isMobileDevice = useIsMobileDevice()
-
-const loginStore = useLoginStore()
-
 const hasPasswordBeenReset = ref<boolean>(false)
 
-const signInWithNewCredentials = async (email: string, password: string): Promise<void> => {
-  await auth.signIn(email, password)
-  const user = await auth.getUser()
-
-  loginStore.setLastLoggedInUser(user)
-
-  await router.replace('/')
+const submit = async (
+  data: ResetPasswordForm,
+): Promise<z.ZodFormattedError<ResetPasswordForm> | void> => {
+  try {
+    await authService.resetPassword(mapResetPasswordFormToDto(data))
+    hasPasswordBeenReset.value = true
+  }
+  catch (err) {
+    return transformApiErrors(err)
+  }
 }
 
-const { submitForm } = useResetPasswordFormService({
-  onSuccess: async (email, password) => {
-    /**
-     * If the user is using a mobile device, we won't sign them in automatically.
-     * This is because the website might just be a cms where the user does not have access to.
-     */
-    if (isMobileDevice)
-      hasPasswordBeenReset.value = true
-    else
-      await signInWithNewCredentials(email, password)
-  },
-})
-
 const form = useForm(resetPasswordForm, {
-  onSubmit: submitForm,
+  onSubmit: submit,
 })
 
 if (token == null || email == null)

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { http } from '@/plugins'
+import { http } from '@/http'
 import { forgotPasswordDto, resetPasswordDto } from '@/models'
 import type { ForgotPasswordDto, ResetPasswordDto } from '@/models'
 

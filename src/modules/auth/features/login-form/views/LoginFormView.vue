@@ -1,33 +1,57 @@
 <script setup lang="ts">
 import { useForm } from '@appwise/forms'
+import { AxiosError } from 'axios'
+import type { z } from 'zod'
 
-import { useLoginFormService, useLoginFormUtils } from '../composables'
-
+import { useLoginFormUtils } from '../composables'
 import { useForgotPasswordStore, useLoginStore } from '../../../stores'
-import { loginForm } from '@/models'
 
+import { useAuth } from '@/composables'
+
+import { loginForm } from '@/models'
 import { Route } from '@/enums'
+import type { LoginForm } from '@/models'
 
 const { t } = useI18n()
 const router = useRouter()
-
+const auth = useAuth()
 const loginStore = useLoginStore()
 const forgotPasswordStore = useForgotPasswordStore()
 
-const { submitForm } = useLoginFormService({
-  onSuccess: async (user) => {
+const submit = async (
+  { email, password }: LoginForm,
+): Promise<z.ZodFormattedError<LoginForm> | void> => {
+  try {
+    await auth.signIn(email, password)
+    const user = await auth.getUser()
+
     forgotPasswordStore.setLastLoginAttemptEmail(null)
     loginStore.setLastLoggedInUser(user)
 
     await router.replace('/')
-  },
-  onError: (email) => {
-    forgotPasswordStore.setLastLoginAttemptEmail(email)
-  },
-})
+  }
+  catch (err) {
+    if (err instanceof AxiosError) {
+      const { response } = err
+
+      if (response !== undefined && [400, 401].includes(response.status)) {
+        forgotPasswordStore.setLastLoginAttemptEmail(email)
+
+        return {
+          password: {
+            _errors: [t('auth.login_form.invalid_email_or_password')],
+          },
+        } as unknown as z.ZodFormattedError<LoginForm>
+      }
+      else {
+        throw err
+      }
+    }
+  }
+}
 
 const form = useForm(loginForm, {
-  onSubmit: submitForm,
+  onSubmit: submit,
 })
 
 const { title } = useLoginFormUtils()

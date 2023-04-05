@@ -8,7 +8,7 @@ class InvalidSchemaError extends Error {
   }
 }
 
-export const get = async<T extends z.ZodObject<any> | z.ZodArray<any>>(
+const get = async<T extends z.ZodObject<any> | z.ZodArray<any>>(
   url: string,
   {
     responseSchema,
@@ -31,7 +31,7 @@ export const get = async<T extends z.ZodObject<any> | z.ZodArray<any>>(
   }
 }
 
-export const post = async <
+const post = async <
   T extends z.ZodObject<any> | z.ZodArray<any>,
   V extends z.ZodObject<any>,
 >(
@@ -63,7 +63,7 @@ export const post = async <
   }
 }
 
-export const put = async <
+const put = async <
   T extends z.ZodObject<any> | z.ZodArray<any>,
   V extends z.ZodObject<any>,
 >(
@@ -95,10 +95,17 @@ export const put = async <
   }
 }
 
-export const deleteResource = async <T>(
+const deleteResource = async <T>(
   url: string, config?: Partial<AxiosRequestConfig<any>>,
 ): Promise<T> => {
   const { data } = await axios.delete<T>(url, config)
 
   return data
+}
+
+export const http = {
+  get,
+  post,
+  put,
+  delete: deleteResource,
 }

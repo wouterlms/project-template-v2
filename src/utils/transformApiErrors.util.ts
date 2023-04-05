@@ -6,14 +6,14 @@ interface AxiosErrorData {
   errors: Record<string, string[]>
 }
 
-export default (error: unknown): Omit<z.ZodFormattedError<any>, '_errors'> => {
+export default (error: unknown): z.ZodFormattedError<any> => {
   if (!(error instanceof AxiosError))
     throw error
 
   const { response } = error
 
   if (response == null)
-    return {}
+    return {} as unknown as z.ZodFormattedError<any>
 
   const { data } = response
   const { errors } = data as AxiosErrorData
@@ -25,5 +25,5 @@ export default (error: unknown): Omit<z.ZodFormattedError<any>, '_errors'> => {
     },
   }), {})
 
-  return mappedErrors
+  return mappedErrors as unknown as z.ZodFormattedError<any>
 }

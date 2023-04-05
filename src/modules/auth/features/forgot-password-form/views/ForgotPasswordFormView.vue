@@ -1,29 +1,38 @@
 <script setup lang="ts">
 import { useForm } from '@appwise/forms'
-
-import { useForgotPasswordFormService } from '../composables'
+import type { z } from 'zod'
 
 import { useForgotPasswordStore } from '../../../stores'
-import { forgotPasswordForm } from '@/models'
+import { mapForgotPasswordFormToDto } from '../utils'
+
+import { authService } from '@/services'
+import { transformApiErrors } from '@/utils'
 
 import { Route } from '@/enums'
+import { forgotPasswordForm } from '@/models'
+import type { ForgotPasswordForm, ResetPasswordForm } from '@/models'
 
 const { t } = useI18n()
 
 const forgotPasswordStore = useForgotPasswordStore()
 
 const { lastLoginAttemptEmail } = forgotPasswordStore
-
 const hasSentEmail = computed<boolean>(() => forgotPasswordStore.hasSentEmail)
 
-const { submitForm } = useForgotPasswordFormService({
-  onSuccess: () => {
+const submit = async (
+  data: ForgotPasswordForm,
+): Promise<z.ZodFormattedError<ResetPasswordForm> | void> => {
+  try {
+    await authService.forgotPassword(mapForgotPasswordFormToDto(data))
     forgotPasswordStore.setHasSentEmail(true)
-  },
-})
+  }
+  catch (err) {
+    return transformApiErrors(err)
+  }
+}
 
 const form = useForm(forgotPasswordForm, {
-  onSubmit: submitForm,
+  onSubmit: submit,
 })
 
 const email = form.register('email', lastLoginAttemptEmail ?? undefined)

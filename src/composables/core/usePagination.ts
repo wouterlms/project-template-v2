@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { http } from '@/plugins'
+import { http } from '@/http'
 
 const metaSchema = z.object({
   currentPage: z.number(),

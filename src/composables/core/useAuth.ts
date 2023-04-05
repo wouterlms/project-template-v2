@@ -7,10 +7,10 @@ import router from '@/router'
 import { useAuthStore } from '@/modules/auth/stores'
 
 import { Route } from '@/enums'
-import { profile } from '@/models'
-import type { Profile } from '@/models'
+import { authenticatedUser } from '@/models'
+import type { AuthenticatedUser } from '@/models'
 
-export default (): Omit<UseAuth<Profile>, 'user'> => {
+export default (): Omit<UseAuth<AuthenticatedUser>, 'user'> => {
   const {
     VITE_API_BASE_URL,
     VITE_CLIENT_ID,
@@ -36,7 +36,7 @@ export default (): Omit<UseAuth<Profile>, 'user'> => {
 
   const authStore = useAuthStore()
 
-  const auth = useAuth<Profile>({
+  const auth = useAuth<AuthenticatedUser>({
     baseURL: VITE_API_BASE_URL,
     clientId: VITE_CLIENT_ID,
     clientSecret: VITE_CLIENT_SECRET,
@@ -50,11 +50,11 @@ export default (): Omit<UseAuth<Profile>, 'user'> => {
     },
   })
 
-  const getUser = async (): Promise<Profile> => {
+  const getUser = async (): Promise<AuthenticatedUser> => {
     const user = await auth.getUser()
 
     try {
-      const parsedUser = profile.parse(user)
+      const parsedUser = authenticatedUser.parse(user)
 
       authStore.setUser(parsedUser)
 

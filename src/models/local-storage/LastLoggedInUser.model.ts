@@ -1,3 +1,3 @@
-import type { Profile } from '../auth'
+import type { AuthenticatedUser } from '../auth'
 
-export interface LastLoggedInUser extends Profile {}
+export interface LastLoggedInUser extends AuthenticatedUser {}
