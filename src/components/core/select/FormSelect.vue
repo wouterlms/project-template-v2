@@ -3,13 +3,20 @@ import { useVModel } from '@wouterlms/composables'
 
 import { useComponentAttrs } from '@/composables/ui'
 
-import type { Props as BaseInputProps } from './BaseInput.vue'
+import type { Props as BaseInputProps } from './BaseSelect.vue'
 
 interface Props extends BaseInputProps {
   /**
-   * The value of the component. Can be either a number or a string.
+   * The current value of the input.
    */
   modelValue: BaseInputProps['modelValue']
+
+  /**
+   * A function that converts the input value to a string for display.
+   * @param value The value of the input.
+   * @returns A string representation of the value.
+   */
+  displayValue: (value: unknown) => string
 
   /**
    * The error messages associated with the component, if any.
@@ -55,21 +62,20 @@ export default {
     :is-touched="isTouched"
     :label="label"
   >
-    <BaseInput
+    <BaseSelect
       v-model="value"
       v-bind="{
         ...attrs.functional,
         ...attrs.listeners,
       }"
+      :display-value="displayValue"
       :has-error="hasError"
     >
       <template #icon-left>
         <slot name="icon-left" />
       </template>
 
-      <template #icon-right>
-        <slot name="icon-right" />
-      </template>
-    </BaseInput>
+      <slot />
+    </BaseSelect>
   </FormLabel>
 </template>

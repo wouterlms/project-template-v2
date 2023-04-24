@@ -3,6 +3,9 @@ import { ComboboxOption, ListboxOption } from '@headlessui/vue'
 import { PRIVACY_AND_SECURITY_CHECKMARK } from '@wouterlms/icons'
 
 interface Props {
+  /**
+   * Determines if the option is disabled.
+   */
   isDisabled?: boolean
 }
 

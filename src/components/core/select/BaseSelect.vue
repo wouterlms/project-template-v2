@@ -15,7 +15,7 @@ import { colors, getColor } from '@/theme'
 
 type ModelValue = boolean | number | object | string | null
 
-interface Props {
+export interface Props {
   /**
    * The current value of the input.
    */
@@ -96,6 +96,8 @@ const emit = defineEmits<{
 
 const selectedValue = useVModel(computed<ModelValue>(() => modelValue))
 
+const slots = useSlots()
+
 const isFocused = ref<boolean>(false)
 const hasBeenFocusedAtleastOnce = ref<boolean>(false)
 
@@ -103,7 +105,7 @@ const optionsElement = ref<Nullable<InstanceType<typeof ComboboxOptions | typeof
   null,
 )
 
-const inputClasses = 'bg-input relative flex h-10 items-center justify-between border border-solid p-2 text-left outline outline-2 outline-offset-2'
+const inputClasses = 'bg-input relative flex h-10 items-center justify-between border border-solid text-left outline outline-2 outline-offset-2'
 const optionsClasses = 'relative bg-primary shadow-primary max-h-60 overflow-hidden overflow-y-auto rounded-md outline-none'
 
 const floatProps = {
@@ -120,6 +122,10 @@ const floatProps = {
   'leave-to': 'scale-y-[0.95] opacity-0',
   'tailwindcss-origin-class': true,
 }
+
+const hasLeftIconSlotContent = computed<boolean>(
+  () => slots['icon-left'] != null && slots['icon-left']().length > 0,
+)
 
 const isMultiple = computed<boolean>(() => Array.isArray(modelValue))
 
@@ -220,12 +226,26 @@ provide('isFilterable', isFilterable)
     <div
       :class="[inputClasses, rounded]"
       :style="{
+        padding,
         backgroundColor: computedBackgroundColor,
         borderColor: computedBorderColor(open),
         outlineColor: computedOutlineColor(open),
       }"
       class="duration-200"
     >
+      <div
+        v-if="hasLeftIconSlotContent"
+        :style="{
+          marginRight: padding,
+          width: iconSize,
+          height: iconSize,
+          color: computedIconColor,
+        }"
+        class="shrink-0"
+      >
+        <slot name="icon-left" />
+      </div>
+
       <ComboboxInput
         :display-value="hasValue && !open ? displayValue : undefined"
         :placeholder="hasValue && open ? displayValue(modelValue) : undefined"
@@ -234,7 +254,7 @@ provide('isFilterable', isFilterable)
           color: computedTextColor,
         }"
         class="block w-full truncate bg-transparent pr-4 outline-none"
-        @blur="onFocus"
+        @blur="onBlur(open)"
         @change="emit('update:filter', $event.target.value)"
         @focus="onFocus"
       />
@@ -279,20 +299,36 @@ provide('isFilterable', isFilterable)
       <ListboxButton
         :class="[inputClasses, rounded]"
         :style="{
+          padding,
           backgroundColor: computedBackgroundColor,
           color: computedTextColor,
           borderColor: computedBorderColor(open),
           outlineColor: computedOutlineColor(open),
         }"
-        class="block w-full"
+        class="block w-full duration-200"
         @blur="onBlur(open)"
         @focus="onFocus"
       >
-        <span class="truncate">
-          <template v-if="selectedValue != null">
-            {{ displayValue(selectedValue) }}
-          </template>
-        </span>
+        <div class="flex items-center">
+          <div
+            v-if="hasLeftIconSlotContent"
+            :style="{
+              marginRight: padding,
+              width: iconSize,
+              height: iconSize,
+              color: computedIconColor,
+            }"
+            class="shrink-0"
+          >
+            <slot name="icon-left" />
+          </div>
+
+          <span class="truncate">
+            <template v-if="selectedValue != null">
+              {{ displayValue(selectedValue) }}
+            </template>
+          </span>
+        </div>
 
         <ChevronDownIcon
           :style="{
