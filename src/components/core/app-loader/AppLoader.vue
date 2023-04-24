@@ -7,9 +7,12 @@ interface Props {
 
 const { accentColor } = defineProps<Props>()
 
-const computedAccentColor = computed<string>(
-  () => accentColor == null ? colors['text-primary'] : getColor(accentColor),
-)
+const computedAccentColor = computed<string>(() => {
+  if (accentColor == null)
+    return colors['text-primary']
+
+  return getColor(accentColor)
+})
 
 const rgbToRgba = (rgb: string, alpha: number): string => {
   const [

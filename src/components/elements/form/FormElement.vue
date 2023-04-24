@@ -12,8 +12,8 @@ const { t } = useI18n()
 
 <template>
   <form
-    novalidate
     class="flex h-full w-full flex-1 flex-col"
+    novalidate
     @submit.prevent="form.submit"
   >
     <slot v-if="form.isReady" />

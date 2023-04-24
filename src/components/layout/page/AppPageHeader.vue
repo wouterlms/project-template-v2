@@ -28,8 +28,8 @@ const { breadcrumbs = [] } = defineProps<Props>()
 
         <div class="flex items-center">
           <AppText
-            variant="display-3"
             class="font-medium"
+            variant="display-3"
           >
             {{ title }}
           </AppText>

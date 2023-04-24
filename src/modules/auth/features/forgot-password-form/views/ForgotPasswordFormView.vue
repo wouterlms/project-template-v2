@@ -2,33 +2,33 @@
 import { useForm } from '@appwise/forms'
 import type { z } from 'zod'
 
-import { useForgotPasswordStore } from '../../../stores'
-import { mapForgotPasswordFormToDto } from '../utils'
-
+import { Route } from '@/enums'
+import type { ForgotPasswordForm, ResetPasswordForm } from '@/models'
+import { forgotPasswordForm } from '@/models'
 import { authService } from '@/services'
 import { transformApiErrors } from '@/utils'
 
-import { Route } from '@/enums'
-import { forgotPasswordForm } from '@/models'
-import type { ForgotPasswordForm, ResetPasswordForm } from '@/models'
+import { useForgotPasswordStore } from '../../../stores'
 
 const { t } = useI18n()
 
 const forgotPasswordStore = useForgotPasswordStore()
 
 const { lastLoginAttemptEmail } = forgotPasswordStore
-const hasSentEmail = computed<boolean>(() => forgotPasswordStore.hasSentEmail)
+const hasSentEmail = forgotPasswordStore.hasSentEmail
 
 const submit = async (
   data: ForgotPasswordForm,
-): Promise<z.ZodFormattedError<ResetPasswordForm> | void> => {
+): Promise<Nullable<z.ZodFormattedError<ResetPasswordForm>>> => {
   try {
-    await authService.forgotPassword(mapForgotPasswordFormToDto(data))
+    await authService.forgotPassword(data)
     forgotPasswordStore.setHasSentEmail(true)
   }
   catch (err) {
     return transformApiErrors(err)
   }
+
+  return null
 }
 
 const form = useForm(forgotPasswordForm, {
@@ -44,10 +44,10 @@ onBeforeUnmount(() => {
 
 <template>
   <AuthPage
-    :title="t('auth.forgot_password_form.forgot_password')"
     :description="hasSentEmail
       ? t('auth.forgot_password_form.thank_you_within_a_few')
       : t('auth.forgot_password_form.dont_remember_your_password_enter')"
+    :title="t('auth.forgot_password_form.forgot_password')"
   >
     <AppButton
       v-if="hasSentEmail"
@@ -70,8 +70,8 @@ onBeforeUnmount(() => {
       />
 
       <FormButton
-        :form="form"
         :disable-if-not-dirty="false"
+        :form="form"
         padding="1.2em"
         class="mt-6 w-full"
       >

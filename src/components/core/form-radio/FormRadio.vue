@@ -1,56 +1,124 @@
 <script setup lang="ts">
-import type { Props as BaseProps } from './useFormRadio'
-import useFormRadio from './useFormRadio'
+import { useVModel } from '@wouterlms/composables'
 
 import { useComponentAttrs } from '@/composables/ui'
-
 import type { Color } from '@/theme'
 import { colors, getColor } from '@/theme'
 
-interface Props extends BaseProps {
+interface Props {
+  /**
+   * The current value of the component.
+   */
+  modelValue: unknown
+
+  /**
+   * The value of the radio input.
+   */
+  value: unknown
+
+  /**
+   * Determines whether the radio input should be disabled or not.
+   */
+  isDisabled?: boolean
+
+  /**
+   * Determines whether the radio input should be readonly or not.
+   */
+  isReadonly?: boolean
+
+  /**
+   * Determines whether the radio input should be in an error state or not.
+   */
   hasError?: boolean
+
+  /**
+   * The accent color of the radio input.
+   * This can be a theme color or a hex color.
+   */
   accentColor?: Color | string
+
+  /**
+   * The border color of the radio input.
+   * This can be a theme color or a hex color.
+   */
+  borderColor?: Color | string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  hasError: false,
-  accentColor: undefined,
-})
+const {
+  accentColor,
+  borderColor,
+  hasError = false,
+  isDisabled = false,
+  isReadonly = false,
+  modelValue,
+  value,
+} = defineProps<Props>()
 
-const { radio, state } = useFormRadio()
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: unknown): void
+  (event: 'focus', e: FocusEvent): void
+  (event: 'blur', e: FocusEvent): void
+}>()
+
+const selectedValue = useVModel(computed<unknown>(() => modelValue))
 
 const slots = useSlots()
+const attrs = useComponentAttrs()
 
-const {
-  listenerAttrs,
-  nonStylingAttrs,
-  stylingAttrs,
-} = useComponentAttrs()
+const isFocused = ref<boolean>(false)
 
-const computedAccentColor = computed<string>(
-  () => props.accentColor == null
-    ? colors['accent-primary']
-    : getColor(props.accentColor),
+const hasDefaultSlotContent = computed<boolean>(
+  () => slots.default != null && slots.default().length > 0,
 )
 
-const borderColor = computed<string>(() => {
-  const { isChecked, isFocused } = state.value
+const hasDescriptionSlotContent = computed<boolean>(
+  () => slots.description != null && slots.description().length > 0,
+)
 
-  if (props.hasError)
+const isChecked = computed<boolean>(
+  () => JSON.stringify(value) === JSON.stringify(selectedValue.value),
+)
+
+const computedAccentColor = computed<string>(() => {
+  if (accentColor == null)
+    return colors['accent-primary']
+
+  return getColor(accentColor)
+})
+
+const computedBorderColor = computed<string>(() => {
+  if (hasError)
     return colors['accent-danger']
 
-  if (isChecked || isFocused)
+  if (isChecked.value || isFocused.value)
     return computedAccentColor.value
 
-  return colors['border-input']
+  if (borderColor == null)
+    return colors['border-input']
+
+  return getColor(borderColor)
 })
 
-const dotColor = computed<string>(() => {
-  if (props.hasError)
-    return colors['accent-danger']
+const onClick = (): void => {
+  selectedValue.value = value
+}
 
-  return computedAccentColor.value
-})
+const onFocus = (event: FocusEvent): void => {
+  isFocused.value = true
+  emit('focus', event)
+}
+
+const onBlur = (event: FocusEvent): void => {
+  isFocused.value = false
+  emit('blur', event)
+}
+
+const onKeyDown = (event: KeyboardEvent): void => {
+  if (event.key === ' ') {
+    onClick()
+    event.preventDefault()
+  }
+}
 </script>
 
 <script lang="ts">
@@ -60,77 +128,77 @@ export default {
 </script>
 
 <template>
-  <Component
-    v-bind="stylingAttrs"
-    :is="slots.default ? 'label' : 'div'"
-    class="flex items-center"
+  <label
+    v-bind="attrs.styling"
+    class="flex gap-x-2"
   >
-    <Component
+    <button
       v-bind="{
-        ...nonStylingAttrs,
-        ...listenerAttrs,
+        ...attrs.functional,
+        ...attrs.listeners,
       }"
-      :is="radio"
+      :aria-checked="isChecked"
+      :aria-disabled="isDisabled"
+      :aria-pressed="isChecked"
+      :aria-readonly="isReadonly"
       :class="[
         {
-          'opacity-50': state.isDisabled,
+          'opacity-50': isDisabled,
+          'cursor-not-allowed': isDisabled,
         },
       ]"
+      :disabled="isDisabled"
+      :readonly="isReadonly"
       :style="{
-        borderColor,
-        outlineColor: borderColor,
+        borderColor: computedBorderColor,
+        outlineColor: computedBorderColor,
       }"
-      class="bg-primary
-        flex
-        h-[1.125em]
-        w-[1.125em]
-        shrink-0
-        items-center
-        justify-center
-        rounded-full
-        border-[1.5px]
-        border-solid
-        outline-offset-[3px]
-        duration-200"
+      class="flex h-[1.125em] w-[1.125em] shrink-0 items-center justify-center rounded-full border-[1.5px] border-solid outline-offset-[3px] duration-200"
+      role="radio"
+      type="button"
+      @blur="onBlur"
+      @click="onClick"
+      @focus="onFocus"
+      @keydown="onKeyDown"
     >
-      <Transition name="dot-transition">
-        <div v-if="state.isChecked">
+      <Transition
+        enter-active-class="duration-200"
+        enter-from-class="scale-50 opacity-0"
+        leave-active-class="duration-200"
+        leave-to-class="scale-50 opacity-0"
+      >
+        <div v-if="isChecked">
           <div
             :style="{
-              backgroundColor: dotColor,
+              backgroundColor: computedAccentColor,
             }"
-            class="h-[0.5em] w-[0.5em] rounded-full"
+            class="h-[0.7em] w-[0.7em] rounded-full"
           />
         </div>
       </Transition>
-    </Component>
+    </button>
 
-    <span
-      v-if="slots.default"
-      :class="[
-        hasError ? 'text-accent-danger' : 'text-secondary',
-        {
-          'opacity-50': state.isDisabled,
-        },
-      ]"
-      class="ml-2"
+    <div
+      v-if="hasDefaultSlotContent || hasDescriptionSlotContent"
+      class="-mt-0.5"
     >
-      <slot />
-    </span>
-  </Component>
+      <AppText
+        v-if="hasDefaultSlotContent"
+        variant="body-2"
+      >
+        <slot
+          :is-checked="isChecked"
+          :is-focused="isFocused"
+        />
+      </AppText>
+
+      <AppText
+        v-if="hasDescriptionSlotContent"
+        class="!text-tertiary max-w-xs"
+        variant="body-1"
+      >
+        <slot name="description" />
+      </AppText>
+    </div>
+  </label>
 </template>
-
-<style scoped lang="scss">
-.dot-transition {
-  &-enter-active,
-  &-leave-active {
-    transition: 0.3s cubic-bezier(0.22, 0.68, 0, 1);
-  }
-
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-}
-</style>

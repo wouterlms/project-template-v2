@@ -20,8 +20,8 @@ const { hasDivider = false } = defineProps<Props>()
   >
     <div>
       <AppText
-        variant="headline"
         class="font-medium"
+        variant="headline"
       >
         {{ title }}
       </AppText>
@@ -29,8 +29,8 @@ const { hasDivider = false } = defineProps<Props>()
       <!-- eslint-disable vue/no-v-text-v-html-on-component -->
       <AppText
         v-if="description != null"
-        variant="body-1"
         class="text-tertiary mt-2 max-w-md"
+        variant="body-1"
         v-html="description"
       />
       <!-- eslint-enable vue/no-v-text-v-html-on-component -->

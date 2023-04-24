@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { usePageLoader } from '@/composables'
 
-const { progress, showProgressBar } = usePageLoader()
+const {
+  progress,
+  showProgressBar,
+} = usePageLoader()
 
 const transitionDuration = ref<number>(1000)
 
@@ -23,12 +26,12 @@ watch(progress, () => {
       class="fixed left-0 top-0 z-30 h-[3px] w-full"
     >
       <div
-        class="bg-accent-primary h-full"
         :style="{
           transition: 'cubic-bezier(0.25, 0.19, 0.01, 0.98)',
           width: `${progress}%`,
           transitionDuration: `${transitionDuration}ms`,
         }"
+        class="bg-accent-primary h-full"
       />
     </div>
   </Transition>

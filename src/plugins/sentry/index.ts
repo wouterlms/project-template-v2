@@ -1,11 +1,14 @@
-import { z } from 'zod'
-import { init, vueRouterInstrumentation } from '@sentry/vue'
 import { BrowserTracing } from '@sentry/tracing'
+import { init, vueRouterInstrumentation } from '@sentry/vue'
 import type { App } from 'vue'
 import type { Router } from 'vue-router'
+import { z } from 'zod'
 
 export default (app: App<Element>, router: Router): void => {
-  const { VITE_SENTRY_DSN, VITE_SENTRY_TRACING_ORIGIN } = import.meta.env
+  const {
+    VITE_SENTRY_DSN,
+    VITE_SENTRY_TRACING_ORIGIN,
+  } = import.meta.env
 
   const envSchema = z.object({
     VITE_SENTRY_DSN: z.string().url(),

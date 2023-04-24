@@ -1,18 +1,18 @@
+import type { Component } from 'vue'
 import {
   createRouter,
   createWebHistory,
 } from 'vue-router'
 
-import authRoutes from '@/modules/auth/router'
-
 import { auth } from '@/middleware'
+import authRoutes from '@/modules/auth/router'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: '',
-      component: async () => await import('@/components/layout/AppLayout.vue'),
+      component: async (): Promise<Component> => await import('@/components/layout/AppLayout.vue'),
       meta: {
         middleware: [auth],
       },

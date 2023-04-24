@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { useEventListener, useVModel } from '@wouterlms/composables'
-
 import type { Placement } from '@floating-ui/dom'
-
+import { useEventListener, useVModel } from '@wouterlms/composables'
 import type { Ref, WritableComputedRef } from 'vue'
+
 import { useFloatingUI } from '@/composables/ui'
-
 import { clickOutside as vClickOutside } from '@/directives'
-
 import { colors } from '@/theme'
 
 interface Props {
@@ -25,7 +22,7 @@ interface Props {
    * The border radius of the popover.
    * Defaults to 'rounded'.
    */
-  rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
+  rounded?: 'rounded-2xl' | 'rounded-3xl' | 'rounded-full' | 'rounded-lg' | 'rounded-md' | 'rounded-none' | 'rounded-sm' | 'rounded-xl' | 'rounded'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -54,10 +51,10 @@ const arrow = ref<HTMLElement | null>(null)
 
 const {
   actualPosition,
-  positionX,
-  positionY,
   arrowPositionX,
   arrowPositionY,
+  positionX,
+  positionY,
   width,
 } = useFloatingUI({
   isFloatingElementVisible: computed<boolean>(() => isPopoverVisible.value),
@@ -71,11 +68,11 @@ const {
     container: HTMLElement
     containerPadding: number
   }>({
-    margin: props.margin,
-    offset: props.offset,
-    position: props.position,
-    container: props.container ?? document.body,
-    containerPadding: props.containerPadding,
+  	margin: props.margin,
+  	offset: props.offset,
+  	position: props.position,
+  	container: props.container ?? document.body,
+  	containerPadding: props.containerPadding,
   }),
 })
 
@@ -166,8 +163,8 @@ useEventListener(document, 'focusin', () => {
           class="relative left-0 top-0 z-[1] h-full w-full overflow-hidden"
         >
           <slot
-            name="popover"
             :close="closeAndFocusButton"
+            name="popover"
           />
         </div>
       </div>

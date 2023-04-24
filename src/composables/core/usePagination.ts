@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { http } from '@/http'
 
 const metaSchema = z.object({
@@ -24,7 +25,7 @@ type Links = z.infer<typeof linksSchema>
 export type UsePagination = <T extends z.ZodType>(
   url: string,
   schema: T,
-  queryParams?: Record<string, Nullable<string | number>>
+  queryParams?: Record<string, Nullable<number | string>>
 ) => {
   data: Array<z.infer<T>>
   meta: Nullable<Meta>
@@ -33,15 +34,14 @@ export type UsePagination = <T extends z.ZodType>(
   next: () => Promise<void>
 }
 
-const usePagination: UsePagination = <T extends z.ZodType>(
-  url: string,
-  schema: T,
-  queryParams?: Record<string, Nullable<string | number>>,
+const usePagination: UsePagination = <T extends z.ZodType>(url: string, schema: T,
+  queryParams?: Record<string, Nullable<number | string>>,
 ) => {
   const urlWithQueryParams = computed<string>(() => {
     const filteredQueryParams = Object.fromEntries(
-      Object.entries(queryParams ?? {}).filter(([, value]) => value !== null && value !== ''),
-    ) as Record<string, string>
+      Object
+        .entries(queryParams ?? {})
+        .filter(([, value]) => value !== null && value !== '')) as Record<string, string>
 
     const params = new URLSearchParams(filteredQueryParams)
 
@@ -72,7 +72,7 @@ const usePagination: UsePagination = <T extends z.ZodType>(
       }),
     })
 
-    data.value = response.data as any
+    data.value = response.data
     meta.value = response.meta
     links.value = response.links
 

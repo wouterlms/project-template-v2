@@ -3,15 +3,15 @@
     <CenterContent>
       <div class="text-center">
         <AppText
-          variant="body-2"
           class="text-primary font-medium"
+          variant="body-2"
         >
           <slot name="title" />
         </AppText>
 
         <AppText
-          variant="body-1"
           class="mx-auto mt-1 max-w-sm"
+          variant="body-1"
         >
           <slot name="message" />
         </AppText>

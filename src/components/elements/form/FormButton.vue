@@ -8,15 +8,25 @@ interface Props {
 }
 
 const {
-  form,
   disableIfNotDirty = true,
+  form,
   isDisabled = false,
 } = defineProps<Props>()
+
+const isButtonDisabled = computed<boolean>(() => {
+  if (isDisabled)
+    return true
+
+  if (disableIfNotDirty)
+    return !form.isDirty
+
+  return false
+})
 </script>
 
 <template>
   <ButtonPrimary
-    :is-disabled="(!form.isDirty && disableIfNotDirty) || isDisabled"
+    :is-disabled="isButtonDisabled"
     :is-loading="form.isSubmitting"
     type="submit"
   >

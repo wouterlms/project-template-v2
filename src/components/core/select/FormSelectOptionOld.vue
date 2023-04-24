@@ -30,7 +30,7 @@ const isFilterable = inject('isFilterable', false)
         },
         disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
       ]"
-      class="flex items-center gap-x-2 py-3 px-5 text-sm outline-none"
+      class="flex items-center gap-x-2 px-5 py-3 text-sm outline-none"
     >
       <div
         v-if="isMultiple"

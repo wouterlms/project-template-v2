@@ -8,8 +8,8 @@ const showToast = computed<boolean>(() => toast.value !== null)
 
 <template>
   <Transition
-    name="toast-transition"
     mode="out-in"
+    name="toast-transition"
   >
     <div
       v-if="showToast && toast !== null"

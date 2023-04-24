@@ -1,7 +1,8 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-import AuthLayout from '../components/AuthLayout.vue'
 import { guest } from '@/middleware'
+
+import AuthLayout from '../components/AuthLayout.vue'
 
 const routes: RouteRecordRaw[] = [
   {

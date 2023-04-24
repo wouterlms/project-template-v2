@@ -1,5 +1,4 @@
 import type { Middleware, Placement } from '@floating-ui/dom'
-
 import {
   arrow as arrowMiddleware,
   autoUpdate,
@@ -9,7 +8,6 @@ import {
   shift,
   size,
 } from '@floating-ui/dom'
-
 import type { ComputedRef, Ref } from 'vue'
 
 enum CSSPosition {
@@ -41,7 +39,8 @@ type UseFloatingUI = (options: {
 }
 
 const useFloatingUI: UseFloatingUI = (
-  { isFloatingElementVisible, referenceEl, floatingEl, arrowEl, options }) => {
+  { arrowEl, floatingEl, isFloatingElementVisible, options, referenceEl },
+) => {
   let cleanup: (() => void) | null = null
 
   const positionX = ref<number>(0)
@@ -55,10 +54,11 @@ const useFloatingUI: UseFloatingUI = (
 
   const getMiddleware = (): Middleware[] => {
     const {
-      margin,
-      offset,
       container,
       containerPadding,
+      margin,
+      offset,
+
     } = options
 
     const middleware = [
@@ -106,17 +106,16 @@ const useFloatingUI: UseFloatingUI = (
     const { position } = options
 
     const {
+      middlewareData: { arrow: arrowPosition },
+      placement,
       x,
       y,
-      placement,
-      middlewareData: { arrow: arrowPosition },
     } = await computePosition(
       referenceEl.value!,
       floatingEl.value!, {
         middleware: getMiddleware(),
         placement: (position ?? CSSPosition.BOTTOM),
-      },
-    )
+      })
 
     actualPosition.value = getPosition(placement)
 
@@ -150,7 +149,11 @@ const useFloatingUI: UseFloatingUI = (
   watch(isFloatingElementVisible, async (isVisible) => {
     if (isVisible) {
       await nextTick()
-      cleanup = autoUpdate(referenceEl.value!, floatingEl.value!, updatePosition as any)
+      cleanup = autoUpdate(
+        referenceEl.value!,
+        floatingEl.value!,
+        updatePosition as any,
+      )
     }
     else {
       cleanup?.()

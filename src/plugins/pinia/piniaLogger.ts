@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import type { PiniaPluginContext } from 'pinia'
+
 import { useDarkMode } from '@/composables/ui'
 
 interface Options {
@@ -15,19 +16,17 @@ export default (
     if (!isEnabled || !VITE_IS_LOCAL)
       return
 
-    const { name, args, store } = action
+    const { args, name, store } = action
 
     const now = new Date()
     const timestamp = now.toLocaleTimeString('nl-BE')
     const { isDark } = useDarkMode()
 
     console.groupCollapsed(
-      `%c[%c${store.$id}Store.%c${name}] - %c${timestamp}`,
-      'font-weight: bold;',
-      `color: ${isDark.value ? '#c7cfd7' : '#3f3f3f'};`,
-      `color: ${isDark.value ? '#d2a8ff' : '#8d41c9'};`,
-      'font-weight: normal;',
-    )
+`%c[%c${store.$id}Store.%c${name}] - %c${timestamp}`, 'font-weight: bold;',
+`color: ${isDark.value ? '#c7cfd7' : '#3f3f3f'};`,
+`color: ${isDark.value ? '#d2a8ff' : '#8d41c9'};`,
+'font-weight: normal;')
     console.log(args[0])
     console.groupEnd()
   })

@@ -1,16 +1,19 @@
 {
-  "env": {
-    "es2021": true,
-    "node": true,
-    "commonjs": true,
-    "mocha": true
-  },
   "extends": [
     "wouter"
   ],
+
   "plugins": [
+    "simple-import-sort",
     "require-explicit-generics"
   ],
+
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "project": "./tsconfig.json",
+    "extraFileExtensions": [".vue"]
+  },
+
   "settings": {
     "import/resolver": {
       "node": {
@@ -22,23 +25,42 @@
       }
     }
   },
-  "parserOptions": {
-    "parser": "@typescript-eslint/parser",
-    "project": "./tsconfig.json",
-    "extraFileExtensions": [".vue"]
-  },
-  "rules": {
-    "tailwindcss/no-custom-classname": ["error", {
-      "config": "tailwind.config.cjs"
-    }],
-    
-    "vue/custom-event-name-casing": ["error", "camelCase", {
-      "ignores": ["/.+?:.+/"]
-    }],
+  
 
+  "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/order": "off",
     "require-explicit-generics/require-explicit-generics": [
       "error",
       ["computed", "ref", "reactive", "defineEmits"]
+    ],
+    "tailwindcss/no-custom-classname": ["error", {
+      "config": "tailwind.config.cjs"
+    }],
+    "vue/custom-event-name-casing": ["error", "camelCase", {
+      "ignores": ["/.+?:.+/"]
+    }],
+    "vue/attributes-order": [
+      "error",
+      {
+        "order": [
+          "DEFINITION", // is
+          "LIST_RENDERING", // v-for
+          "CONDITIONALS", // v-if, v-else-if, v-else, v-show, v-cloak
+          "RENDER_MODIFIERS", // v-pre, v-once
+          "GLOBAL", // id
+          "UNIQUE", // ref, key, 
+          "SLOT", // slot
+          "TWO_WAY_BINDING", // v-model
+          "ATTR_DYNAMIC", // v-bind, :foo="bar"
+          "ATTR_STATIC", // prop="foo"
+          "ATTR_SHORTHAND_BOOL", // boolean props e.g. is-active 
+          "EVENTS", // @click="foo"
+          "CONTENT" // v-html, v-text,
+        ],
+        "alphabetical": false
+      }
     ]
   }
 }

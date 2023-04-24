@@ -1,4 +1,3 @@
+export * from './authenticatedUser.model'
 export * from './dtos'
 export * from './forms'
-
-export * from './authenticatedUser.model'

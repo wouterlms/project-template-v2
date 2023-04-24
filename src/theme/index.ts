@@ -1,6 +1,6 @@
 import { useDarkMode } from '@/composables/ui'
 
-const { isDark, detectTheme } = useDarkMode()
+const { detectTheme, isDark } = useDarkMode()
 
 detectTheme()
 
@@ -28,6 +28,9 @@ export const getCssVar = (name: string): string => {
 // eslint-disable-next-line require-explicit-generics/require-explicit-generics
 export const colors = reactive({
   'accent-primary': getCssVar('accent-primary'),
+  'accent-secondary': getCssVar('accent-secondary'),
+  'accent-primary-inverted': getCssVar('accent-primary-inverted'),
+  'accent-secondary-inverted': getCssVar('accent-secondary-inverted'),
 
   'accent-success': getCssVar('accent-success'),
   'accent-success-100': getCssVar('accent-success-100'),

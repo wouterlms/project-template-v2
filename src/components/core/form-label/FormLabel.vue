@@ -1,28 +1,52 @@
 <script setup lang="ts">
-import { PRIVACY_AND_SECURITY_EXCLAMATIONMARK_TRIANGLE_FILL } from '@wouterlms/icons'
-import { colors } from '@/theme'
+import type { Color } from '@/theme'
+import { colors, getColor } from '@/theme'
 
 interface Props {
+  /**
+   * The label text to be displayed.
+   */
   label?: string
+
+  /**
+   * An optional description or helper text to be displayed below the content.
+   */
   description?: string
+
+  /**
+   * An object containing error messages associated with the input.
+   * Should be an object with an "_errors" property containing an array of error strings.
+   */
   errors?: { _errors: string[] }
+
+  /**
+   * A boolean value indicating whether the input has been touched/interacted with.
+   */
   isTouched?: boolean
-  textColor?: string
+
+  /**
+   * An optional text color to be applied to the label and description.
+   * This can be a theme color or a hex color.
+   */
+  textColor?: Color | string
 }
 
 const {
-  label,
   description,
   errors,
-  textColor,
   isTouched = false,
+  label,
+  textColor,
 } = defineProps<Props>()
 
 const labelColor = computed<string>(() => {
   if (errors != null && errors._errors.length > 0 && isTouched)
     return colors['accent-danger']
 
-  return textColor ?? colors['text-secondary']
+  if (textColor != null)
+    return getColor(textColor)
+
+  return colors['text-secondary']
 })
 
 const showErrorMessage = computed<boolean>(
@@ -47,14 +71,7 @@ const showErrorMessage = computed<boolean>(
     <AppHeightTransition :duration="200">
       <div v-if="showErrorMessage">
         <div class="mt-0.5 flex items-center gap-x-2">
-          <AppIcon
-            :icon="PRIVACY_AND_SECURITY_EXCLAMATIONMARK_TRIANGLE_FILL"
-            :secondary-color="colors['bg-primary']"
-            :style="{
-              color: colors['accent-danger'],
-            }"
-            class="w-3.5"
-          />
+          <WarningIcon class="text-accent-danger w-3 fill-white" />
 
           <span
             v-if="errors != null"
@@ -70,8 +87,8 @@ const showErrorMessage = computed<boolean>(
     </AppHeightTransition>
 
     <AppText
-      variant="caption"
       class="text-tertiary mt-1"
+      variant="caption"
     >
       {{ description }}
     </AppText>

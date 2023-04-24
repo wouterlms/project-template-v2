@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
 import { useTimeout } from '@wouterlms/composables'
+import type { Ref } from 'vue'
 
 type UsePageLoader = () => {
   showProgressBar: Ref<boolean>

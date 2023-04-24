@@ -1,90 +1,192 @@
 <script setup lang="ts">
-import { PRIVACY_AND_SECURITY_CHECKMARK } from '@wouterlms/icons'
+import { useVModel } from '@wouterlms/composables'
 
-import type { Props as BaseProps } from './useFormCheckbox'
-import useFormCheckbox from './useFormCheckbox'
-
-import {
-  useColor,
-  useComponentAttrs,
-} from '@/composables/ui'
-
+import { useComponentAttrs } from '@/composables/ui'
+import type { Color } from '@/theme'
 import { colors, getColor } from '@/theme'
 
-import type { Color } from '@/theme'
+interface Props {
+  /**
+   * The current value of the component.
+   */
+  modelValue: unknown
 
-interface Props extends BaseProps {
+  /**
+   * The value of the checkbox.
+   */
+  value: unknown
+
+  /**
+   * Determines whether the checkbox should be disabled or not.
+   */
+  isDisabled?: boolean
+
+  /**
+   * Determines whether the checkbox should be readonly or not.
+   */
+  isReadonly?: boolean
+
+  /**
+   * Determines whether the checkbox should be in an error state or not.
+   */
   hasError?: boolean
+
+  /**
+   * The accent color of the checkbox.
+   * This can be a theme color or a hex color.
+   */
   accentColor?: Color | string
+
+  /**
+   * The background color of the checkbox.
+   * This can be a theme color or a hex color.
+   */
   backgroundColor?: Color | string
+
+  /**
+   * The border color of the checkbox.
+   * This can be a theme color or a hex color.
+   */
   borderColor?: Color | string
 
   /**
-   * The border radius of the button.
-   * Defaults to 'rounded-md'.
+   * The color of the checkmark.
+   * This can be a theme color or a hex color.
    */
-  rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
+  checkmarkColor?: Color | string
+
+  /**
+   * The border radius of the checkbox.
+   * Defaults to 'rounded'.
+   */
+  rounded?: 'rounded-2xl' | 'rounded-3xl' | 'rounded-full' | 'rounded-lg' | 'rounded-md' | 'rounded-none' | 'rounded-sm' | 'rounded-xl' | 'rounded'
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  hasError: false,
-  rounded: 'rounded',
-  accentColor: undefined,
-  backgroundColor: undefined,
-  borderColor: undefined,
-})
+const {
+  accentColor,
+  backgroundColor,
+  borderColor,
+  checkmarkColor,
+  hasError = false,
+  isDisabled = false,
+  isReadonly = false,
+  modelValue,
+  rounded = 'rounded',
+  value,
+} = defineProps<Props>()
 
-const { checkbox, state } = useFormCheckbox()
+const emit = defineEmits<{
+  (event: 'update:modelValue', value: unknown): void
+  (event: 'focus', e: FocusEvent): void
+  (event: 'blur', e: FocusEvent): void
+}>()
+
+const selectedValue = useVModel(computed<unknown>(() => modelValue))
 
 const slots = useSlots()
-const { isDarkColor } = useColor()
+const attrs = useComponentAttrs()
 
-const {
-  listenerAttrs,
-  nonStylingAttrs,
-  stylingAttrs,
-} = useComponentAttrs()
+const isFocused = ref<boolean>(false)
 
-const computedAccentColor = computed<string>(
-  () => props.accentColor == null
-    ? colors['accent-primary']
-    : getColor(props.accentColor),
+const hasDefaultSlotContent = computed<boolean>(
+  () => slots.default != null && slots.default().length > 0,
 )
 
+const hasDescriptionSlotContent = computed<boolean>(
+  () => slots.description != null && slots.description().length > 0,
+)
+
+const isChecked = computed<boolean>({
+  get() {
+    if (Array.isArray(selectedValue.value)) {
+      return selectedValue.value.map(
+        (v) => JSON.stringify(v),
+      ).includes(JSON.stringify(value))
+    }
+
+    return JSON.stringify(value) === JSON.stringify(selectedValue.value)
+  },
+  set(checked: unknown) {
+    if (isReadonly)
+      return
+
+    if (Array.isArray(selectedValue.value)) {
+      const index = selectedValue.value.findIndex(
+        (entry) => JSON.stringify(entry) === JSON.stringify(value),
+      )
+
+      if (index === -1)
+        selectedValue.value.push(value)
+      else
+        selectedValue.value.splice(index, 1)
+    }
+    else {
+      selectedValue.value = checked
+    }
+  },
+})
+
+const computedAccentColor = computed<string>(() => {
+  if (accentColor == null)
+    return colors['accent-primary']
+
+  return getColor(accentColor)
+})
+
 const computedBackgroundColor = computed<string>(() => {
-  if (state.value.isChecked) {
-    if (props.hasError)
+  if (isChecked.value) {
+    if (hasError)
       return colors['accent-danger']
 
     return computedAccentColor.value
   }
 
-  return props.backgroundColor == null
-    ? colors['bg-input']
-    : getColor(props.backgroundColor)
+  if (backgroundColor == null)
+    return colors['bg-input']
+
+  return getColor(backgroundColor)
 })
 
 const computedBorderColor = computed<string>(() => {
-  if (props.hasError)
+  if (hasError)
     return colors['accent-danger']
 
-  const { isChecked, isFocused } = state.value
-
-  if (isChecked || isFocused)
+  if (isChecked.value || isFocused.value)
     return computedAccentColor.value
 
-  return props.borderColor == null
-    ? colors['border-input']
-    : getColor(props.borderColor)
+  if (borderColor == null)
+    return colors['border-input']
+
+  return getColor(borderColor)
 })
 
-const computedTickColor = computed<string>(
-  () => (
-    isDarkColor(computedBackgroundColor.value)
-      ? '#ffffff'
-      : '#000000'
-  ),
-)
+const computedCheckmarkColor = computed<string>(() => {
+  if (checkmarkColor == null)
+    return colors['accent-primary-inverted']
+
+  return getColor(checkmarkColor)
+})
+
+const toggle = (): void => {
+  isChecked.value = !isChecked.value
+}
+
+const onFocus = (event: FocusEvent): void => {
+  isFocused.value = true
+  emit('focus', event)
+}
+
+const onBlur = (event: FocusEvent): void => {
+  isFocused.value = false
+  emit('blur', event)
+}
+
+const onKeyDown = (event: KeyboardEvent): void => {
+  if (event.key === ' ') {
+    toggle()
+    event.preventDefault()
+  }
+}
 </script>
 
 <script lang="ts">
@@ -94,83 +196,79 @@ export default {
 </script>
 
 <template>
-  <Component
-    v-bind="stylingAttrs"
-    :is="slots.default ? 'label' : 'div'"
-    class="flex items-center"
+  <label
+    v-bind="attrs.styling"
+    class="flex gap-x-2"
   >
-    <Component
+    <button
       v-bind="{
-        ...nonStylingAttrs,
-        ...listenerAttrs,
+        ...attrs.functional,
+        ...attrs.listeners,
       }"
-      :is="checkbox"
+      :aria-checked="isChecked"
+      :aria-disabled="isDisabled"
+      :aria-pressed="isChecked"
+      :aria-readonly="isReadonly"
       :class="[
         rounded,
         {
-          'opacity-50': state.isDisabled,
+          'opacity-50': isDisabled,
+          'cursor-not-allowed': isDisabled,
         },
       ]"
+      :disabled="isDisabled"
+      :readonly="isReadonly"
       :style="{
         backgroundColor: computedBackgroundColor,
         borderColor: computedBorderColor,
         outlineColor: computedBorderColor,
       }"
-      class="flex
-        h-[1.125em]
-        w-[1.125em]
-        shrink-0
-        items-center
-        justify-center
-        border-[1.5px]
-        border-solid
-        outline-offset-[3px]
-        duration-200"
+      role="checkbox"
+      type="button"
+      class="flex h-[1.125em] w-[1.125em] shrink-0 items-center justify-center border-[1.5px] border-solid outline-offset-[3px] duration-200"
+      @blur="onBlur"
+      @click="toggle"
+      @focus="onFocus"
+      @keydown="onKeyDown"
     >
-      <Transition name="tick-transition">
-        <div v-if="state.isChecked">
-          <AppIcon
-            :icon="PRIVACY_AND_SECURITY_CHECKMARK"
+      <Transition
+        enter-active-class="duration-200"
+        enter-from-class="scale-50 opacity-0"
+        leave-active-class="duration-200"
+        leave-to-class="scale-50 opacity-0"
+      >
+        <div v-if="isChecked">
+          <CheckmarkIcon
             :style="{
-              color: computedTickColor,
+              color: computedCheckmarkColor,
             }"
-            class="w-[0.6875em]"
+            class="h-[0.6875em]"
           />
         </div>
       </Transition>
-    </Component>
+    </button>
 
-    <span
-      v-if="slots.default"
-      :class="[
-        hasError ? 'text-accent-danger' : 'text-secondary',
-        {
-          'opacity-50': state.isDisabled,
-        },
-      ]"
-      class="ml-2"
+    <div
+      v-if="hasDefaultSlotContent || hasDescriptionSlotContent"
+      class="-mt-0.5"
     >
-      <slot
-        :is-checked="state.isChecked"
-        :is-focused="state.isFocused"
-        :is-disabled="state.isDisabled"
-        :has-error="hasError"
-      />
-    </span>
-  </Component>
+      <AppText
+        v-if="hasDefaultSlotContent"
+        variant="body-2"
+      >
+        <slot
+          :is-checked="isChecked"
+          :is-focused="isFocused"
+        />
+      </AppText>
+
+      <AppText
+        v-if="hasDescriptionSlotContent"
+        class="!text-tertiary max-w-xs"
+        variant="body-1"
+      >
+        <slot name="description" />
+      </AppText>
+    </div>
+  </label>
 </template>
-
-<style scoped lang="scss">
-.tick-transition {
-  &-enter-active,
-  &-leave-active {
-    transition: 0.3s cubic-bezier(0.22, 0.68, 0, 1);
-  }
-
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-}
-</style>

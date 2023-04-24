@@ -1,11 +1,15 @@
 <script setup lang="ts">
 interface Props {
-  grid: string
+  /**
+   * The Tailwind CSS grid class to use for the grid.
+   * Example: 'grid-cols-2'
+   */
+  gridClass: string
 }
 
-const { grid } = defineProps<Props>()
+const { gridClass } = defineProps<Props>()
 
-provide('grid', computed<string>(() => grid))
+provide('grid', computed<string>(() => gridClass))
 </script>
 
 <template>

@@ -3,27 +3,28 @@ import { useForm } from '@appwise/forms'
 import { AxiosError } from 'axios'
 import type { z } from 'zod'
 
-import { useLoginFormUtils } from '../composables'
-import { useForgotPasswordStore, useLoginStore } from '../../../stores'
-
-import { useAuth } from '@/composables'
-
-import { loginForm } from '@/models'
 import { Route } from '@/enums'
 import type { LoginForm } from '@/models'
+import { loginForm } from '@/models'
+import { useAuthStore } from '@/stores'
+
+import {
+  useForgotPasswordStore,
+  useLoginStore,
+} from '../../../stores'
+import { useLoginFormUtils } from '../composables'
 
 const { t } = useI18n()
 const router = useRouter()
-const auth = useAuth()
+const authStore = useAuthStore()
 const loginStore = useLoginStore()
 const forgotPasswordStore = useForgotPasswordStore()
 
 const submit = async (
   { email, password }: LoginForm,
-): Promise<z.ZodFormattedError<LoginForm> | void> => {
+): Promise<Nullable<z.ZodFormattedError<LoginForm>>> => {
   try {
-    await auth.signIn(email, password)
-    const user = await auth.getUser()
+    const user = await authStore.signIn(email, password)
 
     forgotPasswordStore.setLastLoginAttemptEmail(null)
     loginStore.setLastLoggedInUser(user)
@@ -48,6 +49,8 @@ const submit = async (
       }
     }
   }
+
+  return null
 }
 
 const form = useForm(loginForm, {
@@ -59,8 +62,8 @@ const { title } = useLoginFormUtils()
 
 <template>
   <AuthPage
-    :title="title"
     :description="t('auth.login_form.sign_in_to_continue')"
+    :title="title"
   >
     <FormElement :form="form">
       <FormSpacer>
@@ -88,8 +91,8 @@ const { title } = useLoginFormUtils()
 
       <FormButton
         :form="form"
-        padding="1.2em"
         class="mt-6 w-full"
+        padding="1.2em"
       >
         {{ t('common.sign_in') }}
       </FormButton>

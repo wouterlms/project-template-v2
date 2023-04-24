@@ -1,22 +1,21 @@
 import type { HTMLAttributes } from 'vue'
-
-import {
-  computed,
-  useAttrs,
-} from 'vue'
+import { computed, useAttrs } from 'vue'
 
 interface StylingAttrs {
   style: HTMLAttributes['style']
   class: HTMLAttributes['class']
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default () => {
+type UseComponentAttrs = () => {
+  listeners: Record<string, unknown>
+  functional: Record<string, unknown>
+  styling: StylingAttrs
+}
+
+const useComponentAttrs: UseComponentAttrs = () => {
   const attrs = useAttrs()
 
-  const listenerAttrs = computed<{
-    [key: string]: unknown
-  }>(() => {
+  const listeners = computed<Record<string, unknown>>(() => {
     const onAttrs: Record<string, unknown> = {}
 
     Object.entries(attrs).forEach(([
@@ -30,27 +29,26 @@ export default () => {
     return onAttrs
   })
 
-  const nonStylingAttrs = computed<{
-    [key: string]: unknown
-  }>(() => ({
+  const functional = computed<Record<string, unknown>>(() => ({
     ...attrs,
     class: undefined,
     style: undefined,
   }))
 
-  const stylingAttrs = computed<StylingAttrs>(() => {
-    const { style, class: className } = attrs
+  const styling = computed<StylingAttrs>(() => {
+    const { class: className, style } = attrs
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return {
-      style,
+      style: style as HTMLAttributes['style'],
       class: className,
-    } as StylingAttrs
+    }
   })
 
-  return {
-    listenerAttrs,
-    nonStylingAttrs,
-    stylingAttrs,
-  }
+  return reactive<any>({
+    listeners,
+    styling,
+    functional,
+  })
 }
+
+export default useComponentAttrs

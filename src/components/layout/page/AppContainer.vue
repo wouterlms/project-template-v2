@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  as?: string | Object
+  as?: Object | string
 }
 
 const { as = 'div' } = defineProps<Props>()

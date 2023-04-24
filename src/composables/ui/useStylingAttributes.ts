@@ -1,5 +1,4 @@
 import type { HTMLAttributes } from 'vue'
-
 import {
   computed,
   useAttrs,
@@ -13,16 +12,14 @@ interface StylingAttrs {
 export default () => {
   const attrs = useAttrs()
 
-  const nonStylingAttrs = computed<{
-    [key: string]: unknown
-  }>(() => ({
+  const nonStylingAttrs = computed<Record<string, unknown>>(() => ({
     ...attrs,
     class: undefined,
     style: undefined,
   }))
 
   const stylingAttrs = computed<StylingAttrs>(() => {
-    const { style, class: className } = attrs
+    const { class: className, style } = attrs
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     return {

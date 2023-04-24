@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { RouteLocationRaw } from 'vue-router'
-
 import { ARROWS_CHEVRON_RIGHT } from '@wouterlms/icons'
+import type { RouteLocationRaw } from 'vue-router'
 
 interface Props {
   to?: RouteLocationRaw
@@ -13,8 +12,8 @@ const { to } = defineProps<Props>()
 <template>
   <Component
     :is="!!to ? 'RouterLink' : 'div'"
-    :to="to"
     :class="[!!to ? 'text-secondary hover:underline' : 'text-tertiary']"
+    :to="to"
     class="max-w-[12rem] truncate text-sm"
   >
     <slot />

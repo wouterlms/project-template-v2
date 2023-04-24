@@ -1,6 +1,6 @@
+import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { z } from 'zod'
-import type { AxiosRequestConfig } from 'axios'
 
 class InvalidSchemaError extends Error {
   constructor(method: 'get' | 'post' | 'put', url: string, e: z.ZodError) {
@@ -8,7 +8,7 @@ class InvalidSchemaError extends Error {
   }
 }
 
-const get = async<T extends z.ZodObject<any> | z.ZodArray<any>>(
+const get = async<T extends z.ZodArray<any> | z.ZodObject<any>>(
   url: string,
   {
     responseSchema,
@@ -32,7 +32,7 @@ const get = async<T extends z.ZodObject<any> | z.ZodArray<any>>(
 }
 
 const post = async <
-  T extends z.ZodObject<any> | z.ZodArray<any>,
+  T extends z.ZodArray<any> | z.ZodObject<any>,
   V extends z.ZodObject<any>,
 >(
   url: string,
@@ -64,7 +64,7 @@ const post = async <
 }
 
 const put = async <
-  T extends z.ZodObject<any> | z.ZodArray<any>,
+  T extends z.ZodArray<any> | z.ZodObject<any>,
   V extends z.ZodObject<any>,
 >(
   url: string,
@@ -96,7 +96,7 @@ const put = async <
 }
 
 const deleteResource = async <T>(
-  url: string, config?: Partial<AxiosRequestConfig<any>>,
+  url: string, config?: Partial<AxiosRequestConfig>,
 ): Promise<T> => {
   const { data } = await axios.delete<T>(url, config)
 

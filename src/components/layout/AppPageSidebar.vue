@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { RouteLocationRaw } from 'vue-router'
+
 import { useIsKeyboardMode } from '@/composables/ui'
 
 interface Props {
@@ -23,11 +24,11 @@ const isKeyboardMode = useIsKeyboardMode()
       >
         <RouterLink
           v-slot="{ isExactActive }"
-          :to="to"
-          :underline="false"
           :class="{
             'focus:bg-neutral-100': isKeyboardMode,
           }"
+          :to="to"
+          :underline="false"
           class="-ml-3
             block
             rounded

@@ -16,14 +16,16 @@ export default (): Ref<Nullable<Error>> => {
       if (response == null)
         return
 
-      const { status, data: { message } } = response
+      const { data: { message }, status } = response
 
       error.value = {
         status,
         message: message ?? null,
       }
     }
-    else { throw err }
+    else {
+      throw err
+    }
 
     return false
   })

@@ -2,14 +2,11 @@
 import { useForm } from '@appwise/forms'
 import type { z } from 'zod'
 
-import { authService } from '../../../services'
-import { mapResetPasswordFormToDto } from '../utils'
-
 import { useToasts } from '@/composables'
-import { transformApiErrors } from '@/utils'
-
-import { resetPasswordForm } from '@/models'
 import type { ResetPasswordForm } from '@/models'
+import { resetPasswordForm } from '@/models'
+import { authService } from '@/services'
+import { transformApiErrors } from '@/utils'
 
 const { t } = useI18n()
 const { showToastMessage } = useToasts()
@@ -22,14 +19,16 @@ const hasPasswordBeenReset = ref<boolean>(false)
 
 const submit = async (
   data: ResetPasswordForm,
-): Promise<z.ZodFormattedError<ResetPasswordForm> | void> => {
+): Promise<Nullable<z.ZodFormattedError<ResetPasswordForm>>> => {
   try {
-    await authService.resetPassword(mapResetPasswordFormToDto(data))
+    await authService.resetPassword(data)
     hasPasswordBeenReset.value = true
   }
   catch (err) {
     return transformApiErrors(err)
   }
+
+  return null
 }
 
 const form = useForm(resetPasswordForm, {
@@ -49,8 +48,8 @@ const description = computed<string>(() => {
 
 <template>
   <AuthPage
-    :title="t('common.reset_password')"
     :description="description"
+    :title="t('common.reset_password')"
   >
     <FormElement
       v-if="!hasPasswordBeenReset"
@@ -66,8 +65,8 @@ const description = computed<string>(() => {
 
       <FormButton
         :form="form"
-        padding="1.2em"
         class="mt-6 w-full"
+        padding="1.2em"
       >
         {{ t('common.reset_password') }}
       </FormButton>

@@ -1,2 +1,2 @@
-export * from './router'
 export * from './breadcrumb.model'
+export * from './router'

@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import type { ComputedRef } from 'vue'
-
 interface Props {
+  /**
+   * The HTML element or Vue component to use for rendering the component.
+   * If this prop is not provided, 'div' will be used.
+   * Example: 'div', 'button', or a Vue component name.
+   */
   as?: string
 }
 
@@ -9,7 +12,7 @@ const {
   as = 'div',
 } = defineProps<Props>()
 
-const grid = inject('grid') as ComputedRef<string>
+const grid = inject('grid')
 </script>
 
 <template>

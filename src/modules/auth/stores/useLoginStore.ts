@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 
 import { useLocalStorage } from '@/composables'
-
 import { LocalStorageKey } from '@/enums'
 import type { LastLoggedInUser } from '@/models'
 

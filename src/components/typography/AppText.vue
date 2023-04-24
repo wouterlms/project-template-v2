@@ -1,20 +1,20 @@
 <script setup lang="ts">
 interface Props {
-  variant: 'display-4' | 'display-3' | 'display-2' | 'display-1' | 'headline' | 'title' | 'body-2' | 'body-1' | 'caption'
+  variant: 'body-1' | 'body-2' | 'caption' | 'display-1' | 'display-2' | 'display-3' | 'display-4' | 'headline' | 'title'
   truncate?: boolean | number
   as?: string
 }
 
 const {
+  as,
   truncate = false,
   variant,
-  as,
 } = defineProps<Props>()
 
 const classes = computed<string>(() => {
   const classes: string[] = []
 
-  if (truncate === true)
+  if (truncate === true || typeof truncate === 'number')
     classes.push('truncate')
 
   switch (variant) {

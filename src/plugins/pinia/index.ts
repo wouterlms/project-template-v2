@@ -1,4 +1,5 @@
 import { createPinia } from 'pinia'
+
 import logger from './piniaLogger'
 
 const pinia = createPinia()

@@ -16,8 +16,9 @@ const useRouterUtils: UseRouterUtils = () => {
 
   const hasMiddleware = (
     to: RouteRecordNormalized,
-  ): to is RouteRecordNormalized & { meta: { middleware: RouteMiddleware[] } } =>
+  ): to is RouteRecordNormalized & { meta: { middleware: RouteMiddleware[] } } => (
     to.meta.middleware != null
+  )
 
   const handleRouteMiddlewares = async (
     to: RouteLocationNormalized,
@@ -50,7 +51,10 @@ const useRouterUtils: UseRouterUtils = () => {
 
       if (!path.startsWith(routeWithStorePath)) {
         const { store } = meta
-        const { hasDataBeenFetched, reset } = store!()
+        const {
+          hasDataBeenFetched,
+          reset,
+        } = store!()
 
         if (hasDataBeenFetched as boolean) {
           setTimeout(() => {

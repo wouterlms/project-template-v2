@@ -1,14 +1,12 @@
-import { z } from 'zod'
-import { useAuth } from '@appwise/vue-oauth2'
 import type { UseAuth } from '@appwise/vue-oauth2'
-
-import router from '@/router'
-
-import { useAuthStore } from '@/modules/auth/stores'
+import { useAuth } from '@appwise/vue-oauth2'
+import { z } from 'zod'
 
 import { Route } from '@/enums'
-import { authenticatedUser } from '@/models'
 import type { AuthenticatedUser } from '@/models'
+import { authenticatedUser } from '@/models'
+import router from '@/router'
+import { useAuthStore } from '@/stores'
 
 export default (): Omit<UseAuth<AuthenticatedUser>, 'user'> => {
   const {

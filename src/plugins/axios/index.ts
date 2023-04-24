@@ -1,10 +1,34 @@
+import type { AxiosResponse } from 'axios'
 import axios, { AxiosError } from 'axios'
+import { setupCache } from 'axios-cache-adapter'
 
 export default (): void => {
-  const { VITE_API_BASE_URL, VITE_IS_LOCAL } = import.meta.env
+  const {
+    VITE_API_BASE_URL,
+    VITE_IS_LOCAL,
+  } = import.meta.env
+
+  const cache = setupCache({
+    store: {
+      getItem: (key: string) => {
+        const item = sessionStorage.getItem(key) ?? null
+
+        if (item !== null)
+          return JSON.parse(item) as Record<string, unknown>
+
+        return null
+      },
+      setItem: (key: string, response: AxiosResponse) => {
+        sessionStorage.setItem(key, JSON.stringify(response))
+      },
+      removeItem: (key: string) => {
+        sessionStorage.removeItem(key)
+      },
+    },
+  })
 
   const toCamelCase = (str: string): string => (
-    str.replace(/[_.-](\w|$)/g, (_, x) => x.toUpperCase())
+    str.replace(/[_.-](\w|$)/g, (_, x) => (x as string).toUpperCase())
   )
 
   const toSnakeCase = (str: string): string => (
@@ -17,7 +41,8 @@ export default (): void => {
       || typeof obj !== 'object'
       || obj instanceof Date
       || obj instanceof RegExp
-    ) return obj
+    )
+      return obj
 
     if (Array.isArray(obj))
       return obj.map((o) => convert(o, handler))
@@ -35,7 +60,7 @@ export default (): void => {
     if (response == null)
       return
 
-    const { status, config: { url, method } } = response
+    const { config: { method, url }, status } = response
 
     const timestamp = new Date().toLocaleTimeString('nl-BE')
 
@@ -44,10 +69,10 @@ export default (): void => {
 
     /* eslint-disable no-console */
     console.groupCollapsed(
-      `%c[API] ${timestamp} ${method.toUpperCase()} %c${url} %c(${status})`,
-      'font-weight: bold;',
-      'font-weight: bold; color: #5f6367;',
-      'color: #e95f5d; font-weight: bold;',
+`%c[API] ${timestamp} ${method.toUpperCase()} %c${url} %c(${status})`,
+'font-weight: bold;',
+'font-weight: bold; color: #5f6367;',
+'color: #e95f5d; font-weight: bold;',
     )
     console.log('Request', request)
     console.log('Response', response)
@@ -62,7 +87,7 @@ export default (): void => {
 
 Environment: *${environment}*
 
-${method === 'post' || method === 'put' ? `*Payload*\n\`\`\`${JSON.stringify(JSON.parse(response.config.data), null, 2)}\`\`\`` : ''}
+${method === 'post' || method === 'put' ? `*Payload*\n\`\`\`${JSON.stringify(JSON.parse(response.config.data as string), null, 2)}\`\`\`` : ''}
 
 *Response body*
 \`\`\`${JSON.stringify(response.data, null, 2)}\`\`\`
@@ -78,6 +103,7 @@ ${method === 'post' || method === 'put' ? `*Payload*\n\`\`\`${JSON.stringify(JSO
   // Defaults
   axios.defaults.baseURL = `${VITE_API_BASE_URL}/api`
   axios.defaults.headers.common['Accept-Language'] = navigator.language
+  // axios.defaults.adapter = cache.adapter
 
   // Logger
   axios.interceptors.response.use(
@@ -104,7 +130,7 @@ ${method === 'post' || method === 'put' ? `*Payload*\n\`\`\`${JSON.stringify(JSO
 
       return {
         ...request,
-        data: isOAuth ? data : convert(data, toSnakeCase),
+        data: isOAuth ? data as unknown : convert(data, toSnakeCase),
       }
     },
   )
@@ -116,7 +142,7 @@ ${method === 'post' || method === 'put' ? `*Payload*\n\`\`\`${JSON.stringify(JSO
 
       return {
         ...response,
-        data: isOAuth ? data : convert(data, toCamelCase),
+        data: isOAuth ? data as unknown : convert(data, toCamelCase),
       }
     },
   )

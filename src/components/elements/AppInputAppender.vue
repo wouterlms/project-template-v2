@@ -26,7 +26,7 @@ watch([
   (): string | null => value,
   isMounted,
 ], () => {
-  const input = (wrapperEl.value!.querySelector('input') ?? null) as HTMLInputElement | null
+  const input = (wrapperEl.value!.querySelector('input') ?? null)
 
   if (input === null)
     throw new Error('No input element found')
@@ -56,6 +56,7 @@ watch([
     <slot />
 
     <div
+      :style="style"
       class="pointer-events-none
       absolute
       left-[1px]
@@ -64,7 +65,6 @@ watch([
       h-full
       -translate-y-1/2
       items-center"
-      :style="style"
     >
       <span
         :style="{

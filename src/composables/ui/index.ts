@@ -1,4 +1,3 @@
-export { default as useColor } from './useColor'
 export { default as useComponentAttrs } from './useComponentAttrs'
 export { default as useDarkMode } from './useDarkMode'
 export { default as useFloatingUI } from './useFloatingUI'

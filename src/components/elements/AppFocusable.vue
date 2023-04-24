@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  as?: string | Object
+  as?: Record<string, unknown> | string
 }
 
 const { as = 'button' } = defineProps<Props>()
@@ -9,8 +9,8 @@ const { as = 'button' } = defineProps<Props>()
 <template>
   <Component
     :is="as"
+    class="outline-offset-[3px] outline-inherit duration-200"
     type="button"
-    class="rounded outline-offset-[3px] outline-inherit duration-200"
   >
     <slot />
   </Component>

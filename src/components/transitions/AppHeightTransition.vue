@@ -50,11 +50,11 @@ const handleLeave = (element: HTMLElement): void => {
 
 <template>
   <Transition
-    name="height"
     enter-from-class="opacity-0"
     leave-to-class="opacity-0"
-    @enter="handleEnter"
+    name="height"
     @after-enter="handleAfterEnter"
+    @enter="handleEnter"
     @leave="handleLeave"
   >
     <slot />

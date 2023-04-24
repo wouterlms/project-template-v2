@@ -8,82 +8,91 @@ import {
   ListboxButton,
   ListboxOptions,
 } from '@headlessui/vue'
-
+import { Float } from '@headlessui-float/vue'
 import { useVModel } from '@wouterlms/composables'
 import { ARROWS_CHEVRON_DOWN } from '@wouterlms/icons'
-import { Float } from '@headlessui-float/vue'
+
+import { useIsKeyboardMode } from '@/composables/ui'
+import { colors } from '@/theme'
 
 import FormLabel from '../form-label/FormLabel.vue'
-import { colors } from '@/theme'
-import { useIsKeyboardMode } from '@/composables/ui'
+
+type ModelValue = boolean
+| number
+| object
+| string
+| null
 
 interface Props {
   /**
-   * The current value of the input
+   * The current value of the input.
    */
-  modelValue: any
+  modelValue: ModelValue
 
   /**
-   * Function that converts the input value to a string for display
-   * @param value The value of the input
-   * @returns A string representation of the value
+   * A function that converts the input value to a string for display.
+   * @param value The value of the input.
+   * @returns A string representation of the value.
    */
-  displayValue: (value: any) => string
+  displayValue: (value: unknown) => string
 
   /**
-   * Any errors associated with the input
+   * Any errors associated with the input.
    */
   errors?: {
     _errors: string[]
   }
 
   /**
-   * Whether the input should be filterable / searchable
+   * Whether the input should be filterable / searchable.
    */
   isFilterable?: boolean
 
   /**
-   * Whether the input is currently disabled
+   * Whether the input is currently disabled.
    */
   isDisabled?: boolean
 
   /**
-   * Whether the input has been "touched" (e.g. clicked or focused)
+   * Whether the input has been "touched" (e.g. clicked or focused).
    */
   isTouched?: boolean
 
   /**
-   * The border radius of the input element
+   * The border radius of the input element.
+   * Valid options: 'rounded-2xl', 'rounded-3xl', 'rounded-full', 'rounded-lg', 'rounded-md',
+   * 'rounded-none', 'rounded-sm', 'rounded-xl', 'rounded'.
+   * Defaults to 'rounded-md'.
    */
-  rounded?: 'rounded-none' | 'rounded-sm' | 'rounded' | 'rounded-md' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl' | 'rounded-full'
+  rounded?: 'rounded-2xl' | 'rounded-3xl' | 'rounded-full' | 'rounded-lg' | 'rounded-md' | 'rounded-none' | 'rounded-sm' | 'rounded-xl' | 'rounded'
 
   /**
-   * The label of the input
+   * The label of the input.
    */
   label?: string
 }
 
 const {
-  modelValue,
   errors,
   isDisabled = false,
   isFilterable = false,
   isTouched = false,
+  modelValue,
   rounded = 'rounded-md',
 } = defineProps<Props>()
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value: any): void
+  (event: 'update:modelValue', value: ModelValue): void
   (event: 'update:filter', value: string): void
   (event: 'blur'): void
   (event: 'scroll:bottom'): void
 }>()
 
-const selectedValue = useVModel(computed<any>(() => modelValue))
+const selectedValue = useVModel(computed<ModelValue>(() => modelValue))
 
 const isFocused = ref<boolean>(false)
 const hasBeenFocusedAtleastOnce = ref<boolean>(false)
-const optionsElement = ref<Nullable<InstanceType<typeof ListboxOptions | typeof ComboboxOptions>>>(
+const optionsElement = ref<Nullable<InstanceType<typeof ComboboxOptions | typeof ListboxOptions>>>(
   null,
 )
 
@@ -93,7 +102,7 @@ const isKeyboardMode = useIsKeyboardMode()
 const hasError = computed<boolean>(() => errors != null && errors._errors.length > 0 && isTouched)
 const isMultiple = computed<boolean>(() => Array.isArray(modelValue))
 const hasValue = computed<boolean>(
-  () => isMultiple.value ? modelValue.length > 0 : modelValue != null,
+  () => isMultiple.value ? (modelValue as unknown[]).length > 0 : modelValue != null,
 )
 
 provide('isMultiple', isMultiple.value)
@@ -145,7 +154,7 @@ const computedBorderColor = (isOpen: boolean): string => {
 }
 
 const computedBackgroundColor = computed<string>(() => {
-  if (isDisabled === true)
+  if (isDisabled)
     return colors['bg-input-disabled']
 
   return colors['bg-input']
@@ -195,7 +204,7 @@ const handleScroll = (e: Event): void => {
  * We do not have access to the `open` state in the script,
  * so there is currently no way to determine if the select has lost focus.
  */
-watch(() => optionsElement.value?.$el, (el) => {
+watch(() => (optionsElement.value?.$el ?? null) as Nullable<HTMLElement>, (el) => {
   if (el === null && hasBeenFocusedAtleastOnce.value && !isFocused.value)
     emit('blur')
 }, { deep: true })
@@ -203,9 +212,9 @@ watch(() => optionsElement.value?.$el, (el) => {
 
 <template>
   <FormLabel
-    :label="label"
     :errors="errors"
     :is-touched="isTouched"
+    :label="label"
     class="block"
   >
     <Combobox
@@ -232,9 +241,9 @@ watch(() => optionsElement.value?.$el, (el) => {
             color: computedColor,
           }"
           class="block w-full truncate bg-transparent pr-4 outline-none"
+          @blur="handleBlur(open)"
           @change="emit('update:filter', $event.target.value)"
           @focus="handleFocus"
-          @blur="handleBlur(open)"
         />
 
         <Float
@@ -264,8 +273,8 @@ watch(() => optionsElement.value?.$el, (el) => {
             <slot>
               <slot name="empty">
                 <AppText
+                  class="px-5 py-3"
                   variant="body-1"
-                  class="py-3 px-5"
                 >
                   {{ t('core.no_results_found') }}
                 </AppText>
@@ -293,8 +302,8 @@ watch(() => optionsElement.value?.$el, (el) => {
             outlineColor: computedOutlineColor(open),
           }"
           class="block w-full"
-          @focus="handleFocus"
           @blur="handleBlur(open)"
+          @focus="handleFocus"
         >
           <span class="truncate">
             <template v-if="selectedValue != null">
@@ -319,8 +328,8 @@ watch(() => optionsElement.value?.$el, (el) => {
           <slot>
             <slot name="empty">
               <AppText
+                class="px-5 py-3"
                 variant="body-1"
-                class="py-3 px-5"
               >
                 {{ t('core.no_results_found') }}
               </AppText>

@@ -10,16 +10,16 @@ withDefaults(defineProps<Props>(), {})
 <template>
   <div>
     <AppText
-      variant="display-2"
       class="font-medium"
+      variant="display-2"
     >
       {{ title }}
     </AppText>
 
     <AppText
       v-if="description"
-      variant="body-2"
       class="mt-2"
+      variant="body-2"
     >
       {{ description }}
     </AppText>

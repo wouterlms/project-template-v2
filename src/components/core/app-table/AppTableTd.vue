@@ -1,15 +1,18 @@
 <script setup lang="ts">
 interface Props {
-  truncate?: boolean
+  /**
+   * Whether or not the content should be truncated.
+   */
+  shouldNotTruncate?: boolean
 }
 
-const { truncate = false } = defineProps<Props>()
+const { shouldNotTruncate = false } = defineProps<Props>()
 </script>
 
 <template>
   <div
     :class="{
-      truncate,
+      truncate: !shouldNotTruncate,
     }"
     class="text-sm leading-5"
   >

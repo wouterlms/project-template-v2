@@ -1,5 +1,5 @@
-import { z } from 'zod'
 import type { Ref } from 'vue'
+import { z } from 'zod'
 
 import { http } from '@/http'
 
@@ -42,10 +42,9 @@ export default (): UseFileUpload => {
 
       xhr.addEventListener('loadend', () => {
         if (xhr.readyState === 4 && xhr.status === 200)
-
           resolve()
-
-        else reject(new Error('Upload failed'))
+        else
+          reject(new Error('Upload failed'))
       })
 
       xhr.open('PUT', data.url, true)

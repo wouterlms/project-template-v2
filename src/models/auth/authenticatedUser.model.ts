@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { user } from '../users'
 
 export const authenticatedUser = z.object({}).merge(user)

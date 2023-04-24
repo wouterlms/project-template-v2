@@ -10,10 +10,10 @@ export default (): void => {
     async (err) => {
       if (err instanceof AxiosError) {
         const { response } = err
-        const { status, data } = response ?? {}
+        const { data, status } = response ?? {}
 
         if (status !== undefined && status >= 500)
-          showToastMessage(data.message ?? 'Something went wrong')
+          showToastMessage(data.message ?? `Server error ${status}`)
       }
 
       return await Promise.reject(err)
